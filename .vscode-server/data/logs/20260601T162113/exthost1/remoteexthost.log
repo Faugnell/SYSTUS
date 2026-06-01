@@ -1,0 +1,143 @@
+2026-06-01 16:21:23.885 [info] Extension host with pid 1847 started
+2026-06-01 16:21:24.461 [info] ExtensionService#_doActivateExtension vscode.emmet, startup: false, activationEvent: 'onLanguage'
+2026-06-01 16:21:24.478 [info] ExtensionService#_doActivateExtension GitHub.copilot-chat, startup: false, activationEvent: 'onChatSession:claude-code'
+2026-06-01 16:21:38.060 [error] PendingMigrationError: navigator is now a global in nodejs, please see https://aka.ms/vscode-extensions/navigator for additional info on this error.
+    at get (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/workbench/api/node/extensionHostProcess.js:805:7210)
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:337:66523
+    at get value (/home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:277:12355)
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:362:202
+    at Function.r (/home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:277:11339)
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:364:12368
+    at r (/home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:277:11339)
+    at new ZodObject (/home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:277:11598)
+    at mv (/home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:278:20590)
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:364:16871
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:1:231
+    at Object.<anonymous> (/home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:2588:917)
+    at Module._compile (node:internal/modules/cjs/loader:1705:14)
+    at Object..js (node:internal/modules/cjs/loader:1838:10)
+    at Module.load (node:internal/modules/cjs/loader:1441:32)
+    at Function.<anonymous> (node:internal/modules/cjs/loader:1263:12)
+    at i._load (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/workbench/api/node/extensionHostProcess.js:805:6589)
+    at n._load (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/workbench/api/node/extensionHostProcess.js:651:28855)
+    at n._load (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/workbench/api/node/extensionHostProcess.js:643:25791)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:237:24)
+    at Module.require (node:internal/modules/cjs/loader:1463:12)
+    at require (node:internal/modules/helpers:147:16)
+    at bP._doLoadModule (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/workbench/api/node/extensionHostProcess.js:654:1487)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+2026-06-01 16:21:39.166 [error] PendingMigrationError: navigator is now a global in nodejs, please see https://aka.ms/vscode-extensions/navigator for additional info on this error.
+    at get (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/workbench/api/node/extensionHostProcess.js:805:7210)
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:514:47508
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:1:263
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:514:51162
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:1:263
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:514:55194
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:1:263
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:514:56761
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:1:263
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:514:58951
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:1:263
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:523:2608
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:1:263
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:524:2671
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:1:263
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:524:9347
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:1:263
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:526:21450
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:1:263
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:526:25522
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:1:263
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:526:27025
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:1:263
+    at Object.<anonymous> (/home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:3174:2402)
+    at Module._compile (node:internal/modules/cjs/loader:1705:14)
+    at Object..js (node:internal/modules/cjs/loader:1838:10)
+    at Module.load (node:internal/modules/cjs/loader:1441:32)
+    at Function.<anonymous> (node:internal/modules/cjs/loader:1263:12)
+    at i._load (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/workbench/api/node/extensionHostProcess.js:805:6589)
+    at n._load (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/workbench/api/node/extensionHostProcess.js:651:28855)
+    at n._load (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/workbench/api/node/extensionHostProcess.js:643:25791)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:237:24)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1463:12)
+    at require (node:internal/modules/helpers:147:16)
+    at bP._doLoadModule (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/workbench/api/node/extensionHostProcess.js:654:1487)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+2026-06-01 16:21:48.790 [info] ExtensionService#_doActivateExtension vscode.git-base, startup: true, activationEvent: '*', root cause: vscode.git
+2026-06-01 16:21:54.431 [info] ExtensionService#_doActivateExtension vscode.git, startup: true, activationEvent: '*'
+2026-06-01 16:21:54.443 [info] ExtensionService#_doActivateExtension vscode.github, startup: true, activationEvent: '*'
+2026-06-01 16:21:56.357 [info] Eager extensions activated
+2026-06-01 16:21:56.361 [info] ExtensionService#_doActivateExtension vscode.debug-auto-launch, startup: false, activationEvent: 'onStartupFinished'
+2026-06-01 16:21:56.364 [info] ExtensionService#_doActivateExtension vscode.merge-conflict, startup: false, activationEvent: 'onStartupFinished'
+2026-06-01 16:23:13.181 [info] Extension host with pid 1899 started
+2026-06-01 16:23:13.504 [info] ExtensionService#_doActivateExtension GitHub.copilot-chat, startup: false, activationEvent: 'onChatSession:copilot-cloud-agent'
+2026-06-01 16:23:13.512 [info] ExtensionService#_doActivateExtension vscode.emmet, startup: false, activationEvent: 'onLanguage'
+2026-06-01 16:23:23.951 [error] PendingMigrationError: navigator is now a global in nodejs, please see https://aka.ms/vscode-extensions/navigator for additional info on this error.
+    at get (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/workbench/api/node/extensionHostProcess.js:805:7210)
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:337:66523
+    at get value (/home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:277:12355)
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:362:202
+    at Function.r (/home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:277:11339)
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:364:12368
+    at r (/home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:277:11339)
+    at new ZodObject (/home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:277:11598)
+    at mv (/home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:278:20590)
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:364:16871
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:1:231
+    at Object.<anonymous> (/home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:2588:917)
+    at Module._compile (node:internal/modules/cjs/loader:1705:14)
+    at Object..js (node:internal/modules/cjs/loader:1838:10)
+    at Module.load (node:internal/modules/cjs/loader:1441:32)
+    at Function.<anonymous> (node:internal/modules/cjs/loader:1263:12)
+    at i._load (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/workbench/api/node/extensionHostProcess.js:805:6589)
+    at n._load (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/workbench/api/node/extensionHostProcess.js:651:28855)
+    at n._load (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/workbench/api/node/extensionHostProcess.js:643:25791)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:237:24)
+    at Module.require (node:internal/modules/cjs/loader:1463:12)
+    at require (node:internal/modules/helpers:147:16)
+    at bP._doLoadModule (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/workbench/api/node/extensionHostProcess.js:654:1487)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+2026-06-01 16:23:25.316 [error] PendingMigrationError: navigator is now a global in nodejs, please see https://aka.ms/vscode-extensions/navigator for additional info on this error.
+    at get (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/workbench/api/node/extensionHostProcess.js:805:7210)
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:514:47508
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:1:263
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:514:51162
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:1:263
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:514:55194
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:1:263
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:514:56761
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:1:263
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:514:58951
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:1:263
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:523:2608
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:1:263
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:524:2671
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:1:263
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:524:9347
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:1:263
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:526:21450
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:1:263
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:526:25522
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:1:263
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:526:27025
+    at /home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:1:263
+    at Object.<anonymous> (/home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/extensions/copilot/dist/extension.js:3174:2402)
+    at Module._compile (node:internal/modules/cjs/loader:1705:14)
+    at Object..js (node:internal/modules/cjs/loader:1838:10)
+    at Module.load (node:internal/modules/cjs/loader:1441:32)
+    at Function.<anonymous> (node:internal/modules/cjs/loader:1263:12)
+    at i._load (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/workbench/api/node/extensionHostProcess.js:805:6589)
+    at n._load (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/workbench/api/node/extensionHostProcess.js:651:28855)
+    at n._load (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/workbench/api/node/extensionHostProcess.js:643:25791)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:237:24)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1463:12)
+    at require (node:internal/modules/helpers:147:16)
+    at bP._doLoadModule (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/workbench/api/node/extensionHostProcess.js:654:1487)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+2026-06-01 16:23:48.050 [info] ExtensionService#_doActivateExtension vscode.git-base, startup: true, activationEvent: '*', root cause: vscode.git
+2026-06-01 16:23:50.293 [info] Extension host terminating: received terminate message from renderer
+2026-06-01 16:23:50.326 [info] Extension host with pid 1899 exiting with code 0

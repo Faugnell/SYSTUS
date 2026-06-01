@@ -1,0 +1,12 @@
+{
+    "git.autofetch": true,
+    "chat.mcp.autostart": "newAndOutdated",
+    "remote.SSH.remotePlatform": {
+        "yura-server": "linux",
+        "raspberry": "linux",
+        "systus.local": "linux",
+        "10.0.0.27": "linux"
+    },
+    "github.copilot.nextEditSuggestions.enabled": true,
+    "remote.SSH.useExecServer": false
+}

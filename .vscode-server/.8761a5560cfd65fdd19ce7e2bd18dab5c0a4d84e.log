@@ -1,0 +1,88 @@
+*
+* Visual Studio Code Server
+*
+* By using the software, you agree to
+* the Visual Studio Code Server License Terms (https://aka.ms/vscode-server-license) and
+* the Microsoft Privacy Statement (https://privacy.microsoft.com/en-US/privacystatement).
+*
+Server bound to 127.0.0.1:42039 (IPv4)
+Extension host agent listening on 42039
+
+[16:37:48] 
+
+
+
+
+[reconnection-grace-time] No CLI argument provided, using default: 10800000ms (10800s)
+[16:37:48] [AgentHostChannel] Registered unavailable IPC channel 'agentHostProxy': no --agent-host-bridge-port / --agent-host-bridge-path set.
+[16:37:48] Extension host agent started.
+[16:37:49] [127.0.0.1][95a80d43][ManagementConnection] New connection established.
+[16:37:50] [127.0.0.1][920782bf][ExtensionHostConnection] New connection established.
+[16:37:50] [127.0.0.1][920782bf][ExtensionHostConnection] <1603> Launched Extension Host Process.
+[16:37:51] #1: https://main.vscode-cdn.net/extensions/marketplace.json - error GET AggregateError [ETIMEDOUT]: 
+[16:37:55] [127.0.0.1][920782bf][ExtensionHostConnection] <1603> [reconnection-grace-time] Extension host: read VSCODE_RECONNECTION_GRACE_TIME=10800000ms (10800s)
+
+rejected promise not handled within 1 second: CodeExpectedError: Could not find pty 4 on pty host
+stack trace: CodeExpectedError: Could not find pty 4 on pty host
+    at U._throwIfNoPty (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/platform/terminal/node/ptyHostMain.js:422:7638)
+    at U.updateTitle (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/platform/terminal/node/ptyHostMain.js:422:2083)
+    at V.t.<computed> (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/platform/terminal/node/ptyHostMain.js:421:3804)
+    at Object.call (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/platform/terminal/node/ptyHostMain.js:404:4933)
+    at Sr.onPromise (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/platform/terminal/node/ptyHostMain.js:402:87326)
+    at Sr.onRawMessage (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/platform/terminal/node/ptyHostMain.js:402:86749)
+    at Nt.value (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/platform/terminal/node/ptyHostMain.js:402:86040)
+    at v._deliver (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/platform/terminal/node/ptyHostMain.js:402:3244)
+    at v.fire (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/platform/terminal/node/ptyHostMain.js:402:3562)
+    at process.x (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/platform/terminal/node/ptyHostMain.js:400:31785)
+    at process.emit (node:events:519:28)
+    at emit (node:internal/child_process:949:14)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)
+[16:38:01] Error [CodeExpectedError]: Could not find pty 4 on pty host
+    at U._throwIfNoPty (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/platform/terminal/node/ptyHostMain.js:422:7638)
+    at U.updateTitle (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/platform/terminal/node/ptyHostMain.js:422:2083)
+    at V.t.<computed> (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/platform/terminal/node/ptyHostMain.js:421:3804)
+    at Object.call (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/platform/terminal/node/ptyHostMain.js:404:4933)
+    at Sr.onPromise (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/platform/terminal/node/ptyHostMain.js:402:87326)
+    at Sr.onRawMessage (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/platform/terminal/node/ptyHostMain.js:402:86749)
+    at Nt.value (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/platform/terminal/node/ptyHostMain.js:402:86040)
+    at v._deliver (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/platform/terminal/node/ptyHostMain.js:402:3244)
+    at v.fire (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/platform/terminal/node/ptyHostMain.js:402:3562)
+    at process.x (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/platform/terminal/node/ptyHostMain.js:400:31785)
+    at process.emit (node:events:519:28)
+    at emit (node:internal/child_process:949:14)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)
+rejected promise not handled within 1 second: CodeExpectedError: Could not find pty 4 on pty host
+stack trace: CodeExpectedError: Could not find pty 4 on pty host
+    at U._throwIfNoPty (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/platform/terminal/node/ptyHostMain.js:422:7638)
+    at U.updateIcon (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/platform/terminal/node/ptyHostMain.js:422:2145)
+    at V.t.<computed> (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/platform/terminal/node/ptyHostMain.js:421:3804)
+    at Object.call (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/platform/terminal/node/ptyHostMain.js:404:4933)
+    at Sr.onPromise (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/platform/terminal/node/ptyHostMain.js:402:87326)
+    at Sr.onRawMessage (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/platform/terminal/node/ptyHostMain.js:402:86749)
+    at Nt.value (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/platform/terminal/node/ptyHostMain.js:402:86040)
+    at v._deliver (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/platform/terminal/node/ptyHostMain.js:402:3244)
+    at v.fire (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/platform/terminal/node/ptyHostMain.js:402:3562)
+    at process.x (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/platform/terminal/node/ptyHostMain.js:400:31785)
+    at process.emit (node:events:519:28)
+    at emit (node:internal/child_process:949:14)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)
+[16:38:01] Error [CodeExpectedError]: Could not find pty 4 on pty host
+    at U._throwIfNoPty (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/platform/terminal/node/ptyHostMain.js:422:7638)
+    at U.updateIcon (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/platform/terminal/node/ptyHostMain.js:422:2145)
+    at V.t.<computed> (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/platform/terminal/node/ptyHostMain.js:421:3804)
+    at Object.call (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/platform/terminal/node/ptyHostMain.js:404:4933)
+    at Sr.onPromise (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/platform/terminal/node/ptyHostMain.js:402:87326)
+    at Sr.onRawMessage (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/platform/terminal/node/ptyHostMain.js:402:86749)
+    at Nt.value (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/platform/terminal/node/ptyHostMain.js:402:86040)
+    at v._deliver (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/platform/terminal/node/ptyHostMain.js:402:3244)
+    at v.fire (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/platform/terminal/node/ptyHostMain.js:402:3562)
+    at process.x (file:///home/systus/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/out/vs/platform/terminal/node/ptyHostMain.js:400:31785)
+    at process.emit (node:events:519:28)
+    at emit (node:internal/child_process:949:14)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)
+[16:38:16] [127.0.0.1][95a80d43][ManagementConnection] The client has disconnected gracefully, so the connection will be disposed.
+[16:38:52] No ptyHost heartbeat after 6 seconds
+[16:38:59] [127.0.0.1][756ecd1a][ManagementConnection] New connection established.
+[16:38:59] [127.0.0.1][f28b522e][ExtensionHostConnection] New connection established.
+[16:39:00] [127.0.0.1][f28b522e][ExtensionHostConnection] <1874> Launched Extension Host Process.
+[16:39:14] No ptyHost heartbeat after 6 seconds
