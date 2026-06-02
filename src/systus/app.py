@@ -15,7 +15,7 @@ BUTTON_PIN = 5
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(BUTTON_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-_last_button_state = True
+_last_button_state = GPIO.input(BUTTON_PIN)
 
 class AppMode(str, Enum):
     SETUP = "setup"
@@ -105,7 +105,7 @@ def main_loop() -> None:
         else:
             run_running_mode()
 
-        time.sleep(1)
+        time.sleep(0.02)
 
 
 def main() -> None:
