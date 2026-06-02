@@ -8,12 +8,11 @@ Structure cible proposee :
 src/
 └── systus/
     ├── audio_capture/
-    ├── recognition/
-    ├── metadata/
-    ├── display/
-    ├── web/
-    ├── wifi_setup/
     ├── buttons/
+    ├── display/
+    ├── metadata/
+    ├── recognition/
+    ├── wifi/
     └── app.py
 ```
 

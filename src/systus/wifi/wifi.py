@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request
+import subprocess
 
 app = Flask(__name__)
 
@@ -14,7 +15,24 @@ def wifi():
     print("SSID:", ssid)
     print("PASSWORD:", password)
 
-    return f"Connexion en cours à {ssid}"
+    cmd = [
+        "nmcli",
+        "dev",
+        "wifi",
+        "connect",
+        ssid,
+        "password",
+        password
+    ]
+
+    try:
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        print(result.stdout)
+        print(result.stderr)
+    except Exception as e:
+        return f"Erreur: {e}"
+
+    return f"Tentative de connexion à {ssid}"
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
