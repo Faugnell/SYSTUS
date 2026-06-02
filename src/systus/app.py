@@ -1,56 +1,81 @@
-"""S.Y.S.T.U.S. application entrypoint.
-"""
+"""S.Y.S.T.U.S. application entrypoint (runtime loop)."""
+
 
 from __future__ import annotations
 
-import logging
 import subprocess
+import time
 from enum import Enum
-from typing import Protocol
-
 
 class AppMode(str, Enum):
-    """Top-level runtime mode for the device."""
-
     SETUP = "setup"
-    NORMAL = "normal"
+    RUNNING = "running"
 
 
-class WifiStateDetector(Protocol):
-    """Small contract used to decide which mode to run."""
+def is_wifi_connected() -> bool:
+    """
+    Detect WiFi connectivity using nmcli.
+    Returns True if the system is connected to a network.
+    """
+    try:
+        result = subprocess.run(
+            ["nmcli", "-t", "-f", "STATE", "general"],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        return "connected" in result.stdout.lower()
+    except FileNotFoundError:
+        return False
+    
 
-    def is_connected(self) -> bool:
-        ...
+def get_mode() -> AppMode:
+    """
+    Determine system mode based on WiFi state.
+    """
+    if is_wifi_connected():
+        return AppMode.RUNNING
+    return AppMode.SETUP
 
 
-class NmcliWifiStateDetector:
-    """Detect Wi-Fi connectivity from NetworkManager."""
-
-    def is_connected(self) -> bool:
-        try:
-            completed = subprocess.run(
-                ["nmcli", "-t", "-f", "STATE", "general"],
-                capture_output=True,
-                text=True,
-                check=False,
-            )
-        except FileNotFoundError:
-            return False
-
-        return completed.stdout.strip().lower() == "connected"
+def run_setup_mode() -> None:
+    """
+    Placeholder for setup mode logic.
+    """
+    print("[SETUP] No WiFi detected. Setup mode active.")
 
 
-def resolve_mode(wifi_state: WifiStateDetector) -> AppMode:
-    """Map the current Wi-Fi state to the device runtime mode."""
+def run_running_mode() -> None:
+    """
+    Placeholder for normal mode logic.
+    """
+    print("[RUNNING] System connected. Normal mode active.")
 
-    return AppMode.NORMAL if wifi_state.is_connected() else AppMode.SETUP
+
+def main_loop() -> None:
+    """
+    Infinite runtime loop.
+    """
+    last_mode = None
+
+    while True:
+        mode = get_mode()
+
+        # log only when mode changes
+        if mode != last_mode:
+            print(f"[MODE CHANGE] → {mode.value}")
+            last_mode = mode
+
+        if mode == AppMode.SETUP:
+            run_setup_mode()
+        else:
+            run_running_mode()
+
+        time.sleep(2)
 
 
 def main() -> None:
-    logging.basicConfig(level=logging.INFO)
-    wifi_state = NmcliWifiStateDetector()
-    mode = resolve_mode(wifi_state)
-    logging.info("Current mode: %s", mode.value)
+    main_loop()
 
 
 if __name__ == "__main__":
