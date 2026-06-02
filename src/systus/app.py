@@ -105,7 +105,7 @@ def main_loop() -> None:
         else:
             run_running_mode()
 
-        time.sleep(0.2)
+        time.sleep(1)
 
 
 def main() -> None:
