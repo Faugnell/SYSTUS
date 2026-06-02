@@ -6,11 +6,37 @@ from __future__ import annotations
 import subprocess
 import time
 from enum import Enum
+import RPi.GPIO as GPIO
+
+manual_mode: AppMode | None = None
+
+BUTTON_PIN = 5
+
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(BUTTON_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
+_last_button_state = True
 
 class AppMode(str, Enum):
     SETUP = "setup"
     RUNNING = "running"
 
+def read_button_press() -> bool:
+    """
+    Returns True ONLY on rising edge of a button press.
+    """
+    global _last_button_state
+
+    current_state = GPIO.input(BUTTON_PIN)
+
+    pressed = False
+
+    # détecte front descendant (1 -> 0)
+    if _last_button_state is True and current_state is False:
+        pressed = True
+
+    _last_button_state = current_state
+    return pressed
 
 def is_wifi_connected() -> bool:
     """
@@ -49,19 +75,27 @@ def run_running_mode() -> None:
     """
     Placeholder for normal mode logic.
     """
-    print("[RUNNING] System connected. Normal mode active.")
+    print("[RUNNING] System connected. Running mode active.")
 
 
 def main_loop() -> None:
-    """
-    Infinite runtime loop.
-    """
+    global manual_mode
+
     last_mode = None
 
     while True:
-        mode = get_mode()
+        wifi_mode = get_mode()
 
-        # log only when mode changes
+        # bouton = toggle override
+        if read_button_press():
+            if manual_mode is None:
+                manual_mode = AppMode.SETUP if wifi_mode == AppMode.RUNNING else AppMode.RUNNING
+            else:
+                manual_mode = None  # retour mode auto
+
+        # logique finale
+        mode = manual_mode if manual_mode is not None else wifi_mode
+
         if mode != last_mode:
             print(f"[MODE CHANGE] → {mode.value}")
             last_mode = mode
@@ -71,12 +105,19 @@ def main_loop() -> None:
         else:
             run_running_mode()
 
-        time.sleep(2)
+        time.sleep(0.2)
 
 
 def main() -> None:
-    main_loop()
+    try:
+        main_loop()
+    finally:
+        cleanup()
+
+def cleanup() -> None:
+    GPIO.cleanup()
 
 
 if __name__ == "__main__":
     main()
+
