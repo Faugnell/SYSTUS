@@ -2,16 +2,17 @@ from systus.display.waveshare_epd import epd4in2_V2
 from PIL import Image, ImageDraw, ImageFont
 import qrcode
 
-# Init écran UNE seule fois (important)
+W, H = 400, 300
+
+# Init UNE seule fois
 epd = epd4in2_V2.EPD()
 epd.init()
-epd.Clear()
-
-W, H = 400, 300
+epd.Clear()   # <- OK ici une seule fois au démarrage
 
 
 def _center_text(draw, text, y, font):
-    w, h = draw.textbbox((0, 0), text, font=font)[2:]
+    bbox = draw.textbbox((0, 0), text, font=font)
+    w = bbox[2] - bbox[0]
     x = (W - w) // 2
     draw.text((x, y), text, font=font, fill=0)
 
@@ -25,26 +26,24 @@ def _make_qr(url: str, size: int = 140):
     return img_qr.resize((size, size))
 
 
+def _render(image):
+    epd.display(epd.getbuffer(image))
+
+
 def show_setup():
     image = Image.new("1", (W, H), 255)
     draw = ImageDraw.Draw(image)
 
-    # Fonts (fallback simple si pas de TTF dispo)
     font_big = ImageFont.load_default()
     font_small = ImageFont.load_default()
 
-    # Titre
     _center_text(draw, "SETUP MODE", 10, font_big)
-
-    # Sous-titre
     _center_text(draw, "Scan to setup Wifi for SYSTUS:", 40, font_small)
 
-    # QR Code (URL provisoire → à remplacer plus tard par ton endpoint)
     qr = _make_qr("http://192.168.4.1")
-
     image.paste(qr, ((W - qr.size[0]) // 2, 80))
 
-    epd.display(epd.getbuffer(image))
+    _render(image)
 
 
 def show_running():
@@ -52,7 +51,6 @@ def show_running():
     draw = ImageDraw.Draw(image)
 
     font_big = ImageFont.load_default()
-
     _center_text(draw, "RUNNING MODE", 120, font_big)
 
-    epd.display(epd.getbuffer(image))
+    _render(image)
