@@ -7,7 +7,7 @@ import subprocess
 import time
 from enum import Enum
 from gpiozero import Button
-from display.screen import show_setup, show_running
+from systus.display.screen import show_setup, show_running
 
 manual_mode: AppMode | None = None
 
