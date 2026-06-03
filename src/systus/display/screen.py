@@ -1,4 +1,4 @@
-from display.waveshare_epd import epd4in2_V2
+from systus.display.waveshare_epd import epd4in2_V2
 
 from PIL import Image
 from PIL import ImageDraw
