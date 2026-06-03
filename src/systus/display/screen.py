@@ -1,32 +1,26 @@
 from systus.display.waveshare_epd import epd4in2_V2
+from PIL import Image, ImageDraw
 
-from PIL import Image
-from PIL import ImageDraw
+# Init UNE seule fois
+epd = epd4in2_V2.EPD()
+epd.init()
+epd.Clear()
+
+W, H = 400, 300
+
+
+def _draw_text(text: str):
+    image = Image.new("1", (W, H), 255)
+    draw = ImageDraw.Draw(image)
+
+    draw.text((20, 20), text, fill=0)
+
+    epd.display(epd.getbuffer(image))
 
 
 def show_setup():
-    epd = epd4in2_V2.EPD()
-
-    epd.init()
-    epd.Clear()
-
-    image = Image.new("1", (400, 300), 255)
-    draw = ImageDraw.Draw(image)
-
-    draw.text((20, 20), "SETUP MODE", fill=0)
-
-    epd.display(epd.getbuffer(image))
+    _draw_text("SETUP MODE")
 
 
 def show_running():
-    epd = epd4in2_V2.EPD()
-
-    epd.init()
-    epd.Clear()
-
-    image = Image.new("1", (400, 300), 255)
-    draw = ImageDraw.Draw(image)
-
-    draw.text((20, 20), "RUNNING MODE", fill=0)
-
-    epd.display(epd.getbuffer(image))
+    _draw_text("RUNNING MODE")
