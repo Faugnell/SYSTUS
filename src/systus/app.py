@@ -7,6 +7,7 @@ import subprocess
 import time
 from enum import Enum
 from gpiozero import Button
+from display.screen import show_setup, show_running
 
 manual_mode: AppMode | None = None
 
@@ -97,7 +98,14 @@ def main_loop() -> None:
 
         if mode != last_mode:
             print(f"[MODE CHANGE] → {mode.value}")
+
+            if mode == AppMode.SETUP:
+                show_setup()
+            else:
+                show_running()
+
             last_mode = mode
+
 
         if mode == AppMode.SETUP:
             run_setup_mode()
