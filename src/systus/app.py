@@ -5,37 +5,28 @@ from __future__ import annotations
 import subprocess
 import time
 from enum import Enum
-from gpiozero import Button
+
 from systus.display.screen import show_setup, show_running
+from systus.buttons.controller import ButtonController
 
-manual_mode: AppMode | None = None
-
-BUTTON_PIN = 5
-button = Button(BUTTON_PIN)
-
-_last_button_state = button.is_pressed
-
+# -------------------------
+# CLASSES
+# -------------------------
 class AppMode(str, Enum):
     SETUP = "setup"
     RUNNING = "running"
 
-def read_button_press() -> bool:
-    """
-    Returns True only once when the button is pressed.
-    """
-    global _last_button_state
 
-    current_state = button.is_pressed
+# -------------------------
+# STATE GLOBAL
+# -------------------------
+manual_mode: AppMode | None = None
+boot_mode: AppMode | None = None
 
-    pressed = False
 
-    if current_state and not _last_button_state:
-        pressed = True
-
-    _last_button_state = current_state
-
-    return pressed
-
+# -------------------------
+# MODES
+# -------------------------
 def is_wifi_connected() -> bool:
     """
     Detect WiFi connectivity using nmcli.
@@ -51,16 +42,29 @@ def is_wifi_connected() -> bool:
         return "connected" in result.stdout.lower()
     except FileNotFoundError:
         return False
-    
 
-def get_mode() -> AppMode:
-    """
-    Determine system mode based on WiFi state.
-    """
+def init_mode():
+    global boot_mode
+
     if is_wifi_connected():
-        return AppMode.RUNNING
-    return AppMode.SETUP
+        boot_mode = AppMode.RUNNING
+    else:
+        boot_mode = AppMode.SETUP
 
+def get_current_mode():
+    return manual_mode if manual_mode is not None else boot_mode
+
+def toggle_mode():
+    global manual_mode
+
+    if manual_mode is None:
+        manual_mode = (
+            AppMode.SETUP
+            if boot_mode == AppMode.RUNNING
+            else AppMode.RUNNING
+        )
+    else:
+        manual_mode = None
 
 def run_setup_mode() -> None:
     """
@@ -72,56 +76,49 @@ def run_running_mode() -> None:
     Placeholder for normal mode logic.
     """
 
-def main_loop() -> None:
-    global manual_mode
+
+
+# -------------------------
+# MAIN LOOP
+# -------------------------
+def main_loop():
+    global boot_mode
 
     last_mode = None
 
-    while True:
-        wifi_mode = get_mode()
+    init_mode()
 
-        # bouton = toggle override
-        if read_button_press():
-            print("BUTTON PRESSED")
-            if manual_mode is None:
-                manual_mode = AppMode.SETUP if wifi_mode == AppMode.RUNNING else AppMode.RUNNING
-            else:
-                manual_mode = None  # retour mode auto
+    buttons = ButtonController(toggle_mode)
 
-        # logique finale
-        mode = manual_mode if manual_mode is not None else wifi_mode
-
-        if mode != last_mode:
-            print(f"[MODE CHANGE] → {mode.value}")
-
-            if mode == AppMode.SETUP:
-                show_setup()
-            else:
-                show_running()
-
-            last_mode = mode
-
-
-        if mode == AppMode.SETUP:
-            run_setup_mode()
-        else:
-            run_running_mode()
-
-        time.sleep(0.2)
-
-
-def main() -> None:
     try:
-        main_loop()
+        while True:
+            mode = get_current_mode()
+
+            # update écran uniquement si changement
+            if mode != last_mode:
+                print(f"[MODE CHANGE] → {mode.value}")
+
+                if mode == AppMode.SETUP:
+                    show_setup()
+                else:
+                    show_running()
+
+                last_mode = mode
+
+            # logique runtime
+            if mode == AppMode.SETUP:
+                run_setup_mode()
+            else:
+                run_running_mode()
+
+            time.sleep(0.2)
+
     finally:
-        cleanup()
+        buttons.cleanup()
 
 
-def cleanup() -> None:
-    button.close()
-
-
-
+def main():
+    main_loop()
 
 
 if __name__ == "__main__":
