@@ -6,16 +6,14 @@ from __future__ import annotations
 import subprocess
 import time
 from enum import Enum
-import RPi.GPIO as GPIO
+from gpiozero import Button
 
 manual_mode: AppMode | None = None
 
 BUTTON_PIN = 5
+button = Button(BUTTON_PIN)
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(BUTTON_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-
-_last_button_state = GPIO.input(BUTTON_PIN)
+_last_button_state = button.is_pressed
 
 class AppMode(str, Enum):
     SETUP = "setup"
@@ -23,19 +21,19 @@ class AppMode(str, Enum):
 
 def read_button_press() -> bool:
     """
-    Returns True ONLY on rising edge of a button press.
+    Returns True only once when the button is pressed.
     """
     global _last_button_state
 
-    current_state = GPIO.input(BUTTON_PIN)
+    current_state = button.is_pressed
 
     pressed = False
 
-    # détecte front descendant (1 -> 0)
-    if _last_button_state is True and current_state is False:
+    if current_state and not _last_button_state:
         pressed = True
 
     _last_button_state = current_state
+
     return pressed
 
 def is_wifi_connected() -> bool:
@@ -88,6 +86,7 @@ def main_loop() -> None:
 
         # bouton = toggle override
         if read_button_press():
+            print("BUTTON PRESSED")
             if manual_mode is None:
                 manual_mode = AppMode.SETUP if wifi_mode == AppMode.RUNNING else AppMode.RUNNING
             else:
@@ -114,8 +113,12 @@ def main() -> None:
     finally:
         cleanup()
 
+
 def cleanup() -> None:
-    GPIO.cleanup()
+    button.close()
+
+
+
 
 
 if __name__ == "__main__":
