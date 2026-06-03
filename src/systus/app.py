@@ -66,15 +66,11 @@ def run_setup_mode() -> None:
     """
     Placeholder for setup mode logic.
     """
-    print("[SETUP] No WiFi detected. Setup mode active.")
-
 
 def run_running_mode() -> None:
     """
     Placeholder for normal mode logic.
     """
-    print("[RUNNING] System connected. Running mode active.")
-
 
 def main_loop() -> None:
     global manual_mode
