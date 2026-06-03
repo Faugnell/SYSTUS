@@ -1,5 +1,4 @@
 """S.Y.S.T.U.S. application entrypoint (runtime loop)."""
-"PYTHONPATH=src python3 -m systus.app"
 
 from __future__ import annotations
 
