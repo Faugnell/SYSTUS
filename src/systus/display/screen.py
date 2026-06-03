@@ -8,6 +8,7 @@ def show_setup():
     epd = epd4in2_V2.EPD()
 
     epd.init()
+    epd.Clear()
 
     image = Image.new("1", (400, 300), 255)
     draw = ImageDraw.Draw(image)
@@ -21,6 +22,7 @@ def show_running():
     epd = epd4in2_V2.EPD()
 
     epd.init()
+    epd.Clear()
 
     image = Image.new("1", (400, 300), 255)
     draw = ImageDraw.Draw(image)
