@@ -6,7 +6,7 @@ import subprocess
 import time
 from enum import Enum
 
-from systus.display.screen import show_setup, show_running
+import systus.display.screen as screen
 from systus.buttons.controller import ButtonController
 
 # -------------------------
@@ -16,16 +16,23 @@ class AppMode(str, Enum):
     SETUP = "setup"
     RUNNING = "running"
 
+class RunState(str, Enum):
+    IDLE = "idle"
+    DETECTING = "detecting"
+    THINKING = "thinking"
+    RESULT = "result"
+
 
 # -------------------------
 # STATE GLOBAL
 # -------------------------
 manual_mode: AppMode | None = None
 boot_mode: AppMode | None = None
+run_state = RunState.IDLE
 
 
 # -------------------------
-# MODES
+# WIFI
 # -------------------------
 def is_wifi_connected() -> bool:
     """
@@ -52,64 +59,103 @@ def init_mode():
         boot_mode = AppMode.SETUP
 
 def get_current_mode():
+    global boot_mode
+
+    if boot_mode is None:
+        init_mode()
+
     return manual_mode if manual_mode is not None else boot_mode
 
+
+# -------------------------
+# MODES LOGIC
+# -------------------------
 def toggle_mode():
     global manual_mode
+
+    current = get_current_mode()
 
     if manual_mode is None:
         manual_mode = (
             AppMode.SETUP
-            if boot_mode == AppMode.RUNNING
+            if current == AppMode.RUNNING
             else AppMode.RUNNING
         )
     else:
         manual_mode = None
 
-def run_setup_mode() -> None:
-    """
-    Placeholder for setup mode logic.
-    """
 
-def run_running_mode() -> None:
-    """
-    Placeholder for normal mode logic.
-    """
+# -------------------------
+# RUNNING MODE
+# -------------------------
+def handle_running_mode():
+    global run_state
 
+    if run_state == RunState.IDLE:
+        screen.show_idle()
+
+    elif run_state == RunState.DETECTING:
+        screen.show_detecting()
+        run_state = RunState.THINKING
+
+    elif run_state == RunState.THINKING:
+        screen.show_thinking()
+
+    elif run_state == RunState.RESULT:
+        screen.show_result_placeholder()
+
+        run_state = RunState.IDLE
+
+
+
+# -------------------------
+# MUSIC DETECTION
+# -------------------------
+def start_detection():
+    global run_state
+
+    mode = get_current_mode()
+
+    if mode == AppMode.RUNNING and run_state == RunState.IDLE:
+        run_state = RunState.DETECTING
 
 
 # -------------------------
 # MAIN LOOP
 # -------------------------
-def main_loop():
-    global boot_mode
+def main_loop():    
+    last_draw_time = 0
+    DRAW_INTERVAL = 1.0  
 
     last_mode = None
 
     init_mode()
-
-    buttons = ButtonController(toggle_mode)
+    buttons = ButtonController(toggle_mode, start_detection)
 
     try:
         while True:
             mode = get_current_mode()
 
-            # update écran uniquement si changement
-            if mode != last_mode:
-                print(f"[MODE CHANGE] → {mode.value}")
+            now = time.time()
+
+            should_redraw_mode = (mode != last_mode)
+            should_redraw_timer = (now - last_draw_time > DRAW_INTERVAL)
+
+            if should_redraw_mode or should_redraw_timer:
+
+                if should_redraw_mode:
+                    print(f"[MODE CHANGE] → {mode.value}")
 
                 if mode == AppMode.SETUP:
-                    show_setup()
+                    screen.show_setup()
                 else:
-                    show_running()
+                    screen.show_running()
 
                 last_mode = mode
+                last_draw_time = now
 
-            # logique runtime
-            if mode == AppMode.SETUP:
-                run_setup_mode()
-            else:
-                run_running_mode()
+            if mode == AppMode.RUNNING:
+                handle_running_mode()
 
             time.sleep(0.2)
 

@@ -4,12 +4,17 @@ import qrcode
 
 W, H = 400, 300
 
-# Init UNE seule fois
+# -------------------------
+# INIT E-PAPER (1 seule fois)
+# -------------------------
 epd = epd4in2_V2.EPD()
 epd.init()
-epd.Clear()   # <- OK ici une seule fois au démarrage
+epd.Clear()
 
 
+# -------------------------
+# INTERNAL HELPERS
+# -------------------------
 def _center_text(draw, text, y, font):
     bbox = draw.textbbox((0, 0), text, font=font)
     w = bbox[2] - bbox[0]
@@ -17,19 +22,13 @@ def _center_text(draw, text, y, font):
     draw.text((x, y), text, font=font, fill=0)
 
 
-def _make_qr(url: str, size: int = 140):
-    qr = qrcode.QRCode(box_size=4, border=1)
-    qr.add_data(url)
-    qr.make(fit=True)
-
-    img_qr = qr.make_image(fill_color="black", back_color="white")
-    return img_qr.resize((size, size))
-
-
 def _render(image):
     epd.display(epd.getbuffer(image))
 
 
+# -------------------------
+# SETUP MODE
+# -------------------------
 def show_setup():
     image = Image.new("1", (W, H), 255)
     draw = ImageDraw.Draw(image)
@@ -40,17 +39,57 @@ def show_setup():
     _center_text(draw, "SETUP MODE", 10, font_big)
     _center_text(draw, "Scan to setup Wifi for SYSTUS:", 40, font_small)
 
-    qr = _make_qr("http://192.168.4.1")
-    image.paste(qr, ((W - qr.size[0]) // 2, 80))
+    qr = qrcode.make("http://192.168.4.1")
+    qr = qr.resize((140, 140))
+
+    image.paste(qr, ((W - 140) // 2, 80))
 
     _render(image)
 
 
+# -------------------------
+# RUNNING MODE
+# -------------------------
 def show_running():
     image = Image.new("1", (W, H), 255)
     draw = ImageDraw.Draw(image)
 
-    font_big = ImageFont.load_default()
-    _center_text(draw, "RUNNING MODE", 120, font_big)
+    _center_text(draw, "RUNNING MODE", 120, ImageFont.load_default())
+
+    _render(image)
+
+
+def show_idle():
+    image = Image.new("1", (W, H), 255)
+    draw = ImageDraw.Draw(image)
+
+    _center_text(draw, "Press button to start detection...", 120, ImageFont.load_default())
+
+    _render(image)
+
+
+def show_detecting():
+    image = Image.new("1", (W, H), 255)
+    draw = ImageDraw.Draw(image)
+
+    _center_text(draw, "Listening...", 120, ImageFont.load_default())
+
+    _render(image)
+
+
+def show_thinking():
+    image = Image.new("1", (W, H), 255)
+    draw = ImageDraw.Draw(image)
+
+    _center_text(draw, "SYSTUS is thinking...", 120, ImageFont.load_default())
+
+    _render(image)
+
+
+def show_result_placeholder():
+    image = Image.new("1", (W, H), 255)
+    draw = ImageDraw.Draw(image)
+
+    _center_text(draw, "RESULT MODE", 120, ImageFont.load_default())
 
     _render(image)
