@@ -36,13 +36,13 @@ def show_setup():
     font_big = ImageFont.load_default()
     font_small = ImageFont.load_default()
 
-    _center_text(draw, "SETUP MODE", 20, font_big)
-    _center_text(draw, "Scan to setup Wifi for SYSTUS:", 50, font_small)
+    _center_text(draw, "SETUP MODE", 30, font_big)
+    _center_text(draw, "Scan to setup Wifi for SYSTUS:", 60, font_small)
 
     qr = qrcode.make("http://192.168.4.1")
     qr = qr.resize((140, 140))
 
-    image.paste(qr, ((W - 140) // 2, 90))
+    image.paste(qr, ((W - 140) // 2, 100))
 
     _render(image)
 
