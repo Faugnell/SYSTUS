@@ -50,7 +50,7 @@ def show_setup():
 # -------------------------
 # RUNNING MODE
 # -------------------------
-def show_running():
+def show_idle():
     image = Image.new("1", (W, H), 255)
     draw = ImageDraw.Draw(image)
 
