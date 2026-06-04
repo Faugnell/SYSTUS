@@ -124,10 +124,9 @@ def start_detection():
 # MAIN LOOP
 # -------------------------
 def main_loop():    
-    last_draw_time = 0
-    DRAW_INTERVAL = 1.0  
 
     last_mode = None
+    last_run_state = None
 
     init_mode()
     buttons = ButtonController(toggle_mode, start_detection)
@@ -136,26 +135,27 @@ def main_loop():
         while True:
             mode = get_current_mode()
 
-            now = time.time()
-
             should_redraw_mode = (mode != last_mode)
-            should_redraw_timer = (now - last_draw_time > DRAW_INTERVAL)
 
-            if should_redraw_mode or should_redraw_timer:
+            if should_redraw_mode:
 
-                if should_redraw_mode:
-                    print(f"[MODE CHANGE] → {mode.value}")
+                print(f"[MODE CHANGE] → {mode.value}")
 
                 if mode == AppMode.SETUP:
                     screen.show_setup()
-                else:
-                    screen.show_running()
+
+                if mode == AppMode.RUNNING:
+                    last_run_state = None
 
                 last_mode = mode
-                last_draw_time = now
 
             if mode == AppMode.RUNNING:
-                handle_running_mode()
+
+                current_state = run_state
+
+                if current_state != last_run_state:
+                    handle_running_mode()
+                    last_run_state = current_state
 
             time.sleep(0.2)
 
