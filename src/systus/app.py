@@ -124,7 +124,7 @@ def start_detection():
 # MAIN LOOP
 # -------------------------
 def main_loop():    
-
+    global run_state
     last_mode = None
     last_run_state = None
 
@@ -146,6 +146,7 @@ def main_loop():
                     screen.show_setup()
 
                 if mode == AppMode.RUNNING:
+                    run_state = RunState.IDLE
                     last_run_state = None
 
                 last_mode = mode
