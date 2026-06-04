@@ -116,7 +116,6 @@ def main_loop():
 
                 elif mode == AppMode.RUNNING:
                     detection.reset()
-                    screen.show_idle()
 
                 last_mode = mode
 

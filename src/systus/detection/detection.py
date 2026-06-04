@@ -23,7 +23,7 @@ class DetectionController:
         self.last_render_state = None
 
     def start(self):
-        if self.state == RunState.IDLE:
+        if self.state in (RunState.IDLE, RunState.RESULT):
             self.state = RunState.LISTENING
             self.listen_start_time = time.time()
 
@@ -42,7 +42,7 @@ class DetectionController:
 
         # RESULT → IDLE
         elif self.state == RunState.RESULT:
-            self.state = RunState.IDLE
+            pass
 
     def render(self):
 
