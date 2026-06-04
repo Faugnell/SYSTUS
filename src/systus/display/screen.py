@@ -54,25 +54,20 @@ def show_running():
     image = Image.new("1", (W, H), 255)
     draw = ImageDraw.Draw(image)
 
-    _center_text(draw, "RUNNING MODE", 120, ImageFont.load_default())
+    font_big = ImageFont.load_default()
+    font_small = ImageFont.load_default()
+
+    _center_text(draw, "SYSTUS", 80, font_big)
+    _center_text(draw, "Press button to start detection.", 140, font_small)
 
     _render(image)
 
 
-def show_idle():
+def show_listening():
     image = Image.new("1", (W, H), 255)
     draw = ImageDraw.Draw(image)
 
-    _center_text(draw, "Press button to start detection...", 120, ImageFont.load_default())
-
-    _render(image)
-
-
-def show_detecting():
-    image = Image.new("1", (W, H), 255)
-    draw = ImageDraw.Draw(image)
-
-    _center_text(draw, "Listening...", 120, ImageFont.load_default())
+    _center_text(draw, "Systus is listening...", 120, ImageFont.load_default())
 
     _render(image)
 
