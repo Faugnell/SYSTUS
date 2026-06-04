@@ -142,6 +142,7 @@ def main_loop():
                 print(f"[MODE CHANGE] → {mode.value}")
 
                 if mode == AppMode.SETUP:
+                    run_state = RunState.IDLE
                     screen.show_setup()
 
                 if mode == AppMode.RUNNING:
