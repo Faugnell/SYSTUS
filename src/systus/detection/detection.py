@@ -1,6 +1,7 @@
 import time
 from enum import Enum
 import systus.display.screen as screen
+from systus.audio_capture.recorder import AudioCapture
 
 
 class RunState(str, Enum):
