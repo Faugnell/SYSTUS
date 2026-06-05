@@ -1,45 +1,52 @@
-import numpy as np
-import sounddevice as sd
+import subprocess
+import tempfile
+import os
 
 
 class AudioRecorder:
     """
-    Simple audio recorder for SYSTUS.
-    Returns numpy array (mono or stereo depending on the device).
+    Recorder basé sur arecord (ALSA natif).
+    Très stable sur Raspberry Pi.
     """
 
-    def __init__(self, samplerate: int = 48000, channels: int = 2, device=None):
+    def __init__(
+        self,
+        device: str = "plughw:0,0",
+        samplerate: int = 48000,
+        channels: int = 2,
+    ):
+        self.device = device
         self.samplerate = samplerate
         self.channels = channels
-        self.device = device
 
-    def record(self, duration: float = 5.0) -> np.ndarray:
+    def record(self, duration: float = 5.0) -> str:
         """
-        Record audio for a fixed duration.
-        Returns:
-            np.ndarray: audio buffer (frames, channels)
+        arecord then return path of recorded file.
         """
 
-        frames = []
+        tmp_file = tempfile.NamedTemporaryFile(suffix=".wav", delete=False)
+        path = tmp_file.name
+        tmp_file.close()
 
-        def callback(indata, frame_count, time_info, status):
-            frames.append(indata.copy())
+        cmd = [
+            "arecord",
+            "-D", self.device,
+            "-f", "S32_LE",
+            "-r", str(self.samplerate),
+            "-c", str(self.channels),
+            "-d", str(int(duration)),
+            path,
+        ]
 
+        subprocess.run(cmd, check=True)
+
+        return path
+
+    def cleanup(self, path: str):
+        """
+        Supprime le fichier temporaire.
+        """
         try:
-            with sd.InputStream(
-                samplerate=self.samplerate,
-                channels=self.channels,
-                device=self.device,
-                callback=callback,
-            ):
-                sd.sleep(int(duration * 1000))
-
-        except Exception as e:
-            return np.zeros((0, self.channels), dtype=np.float32)
-
-        if not frames:
-            return np.zeros((0, self.channels), dtype=np.float32)
-
-        audio = np.concatenate(frames, axis=0)
-
-        return audio
+            os.remove(path)
+        except FileNotFoundError:
+            pass
