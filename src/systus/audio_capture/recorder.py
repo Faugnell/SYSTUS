@@ -31,9 +31,9 @@ class AudioRecorder:
         cmd = [
             "arecord",
             "-D", self.device,
-            "-f", "S32_LE",
-            "-r", str(self.samplerate),
-            "-c", str(self.channels),
+            "-f", "S16_LE",
+            "-r", "16000",
+            "-c", "1",
             "-d", str(int(duration)),
             path,
         ]
