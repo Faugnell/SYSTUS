@@ -97,24 +97,29 @@ class DetectionController:
     # RENDER
     # -------------------------
     def render(self):
-
         if self.state == self.last_render_state:
             return
 
+        self.last_render_state = self.state
+
         if self.state == RunState.IDLE:
             screen.show_idle()
+            return
 
-        elif self.state == RunState.LISTENING:
+        if self.state == RunState.LISTENING:
             screen.show_listening()
+            return
 
-        elif self.state == RunState.THINKING:
+        if self.state == RunState.THINKING:
             screen.show_thinking()
+            return
 
-        elif self.state == RunState.RESULT:
+        if self.state == RunState.RESULT:
             if self.ui_result:
                 screen.show_result(self.ui_result)
-
-                self.last_render_state = self.state
+            else:
+                screen.show_result({"title": "No result"})
+            return
 
 
     # -------------------------
