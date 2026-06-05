@@ -1,9 +1,10 @@
 import time
 from enum import Enum
+import tempfile
 
 import systus.display.screen as screen
 from systus.audio_capture.recorder import AudioRecorder
-
+from systus.detection.audd_client import AudDClient
 
 class RunState(str, Enum):
     IDLE = "idle"
@@ -26,7 +27,13 @@ class DetectionController:
 
         # AUDIO
         self.recorder = AudioRecorder()
+
+        self.audd = AudDClient(
+            api_token="a1f8dc29dd7765e68f96e90dc26b8cbc"
+        )
+
         self.audio_buffer = None
+        self.result = None
 
 
     # -------------------------
@@ -36,6 +43,25 @@ class DetectionController:
         if self.state in (RunState.IDLE, RunState.RESULT):
             self.state = RunState.LISTENING
             self.listen_start_time = time.time()
+
+    # -------------------------
+    # AUDIO → FILE
+    # -------------------------
+    def _save_audio_temp(self, audio):
+        """
+        AudD API needs a file, so we convert numpy → wav file.
+        """
+
+        import soundfile as sf
+
+        tmp_file = tempfile.NamedTemporaryFile(
+            suffix=".wav",
+            delete=False
+        )
+
+        sf.write(tmp_file.name, audio, 48000)
+
+        return tmp_file.name
 
     # -------------------------
     # UPDATE LOOP
@@ -58,9 +84,13 @@ class DetectionController:
 
             if now - self.think_start_time >= self.think_duration:
 
-                # TODO: ici analyse audio_buffer
-                # ex: self.result = detect_song(self.audio_buffer)
+                # 1. convert audio → file
+                wav_path = self._save_audio_temp(self.audio_buffer)
 
+                # 2. call AudD
+                self.result = self.audd.recognize_file(wav_path)
+
+                # 3. go RESULT
                 self.state = RunState.RESULT
 
         # RESULT
@@ -85,6 +115,7 @@ class DetectionController:
             screen.show_thinking()
 
         elif self.state == RunState.RESULT:
+            print("RESULT =", self.result)
             screen.show_result_placeholder()
 
         self.last_render_state = self.state
