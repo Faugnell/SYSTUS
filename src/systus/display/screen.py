@@ -13,7 +13,7 @@ epd.Clear()
 
 
 # -------------------------
-# INTERNAL HELPERS
+# HELPERS
 # -------------------------
 def _center_text(draw, text, y, font):
     bbox = draw.textbbox((0, 0), text, font=font)
@@ -24,6 +24,11 @@ def _center_text(draw, text, y, font):
 
 def _render(image):
     epd.display(epd.getbuffer(image))
+
+def _make_qr(url, size=120):
+    qr = qrcode.make(url)
+    qr = qr.resize((size, size))
+    return qr
 
 
 # -------------------------
@@ -81,10 +86,39 @@ def show_thinking():
     _render(image)
 
 
-def show_result_placeholder():
+def show_result(result: dict):
     image = Image.new("1", (W, H), 255)
     draw = ImageDraw.Draw(image)
 
-    _center_text(draw, "RESULT MODE", 120, ImageFont.load_default())
+    font_big = ImageFont.load_default()
+    font_small = ImageFont.load_default()
+
+    # safety
+    if not result:
+        _center_text(draw, "No result", 120, font_big)
+        _render(image)
+        return
+
+    title = result.get("title", "Unknown title")
+    artist = result.get("artist", "Unknown artist")
+    album = result.get("album", "Unknown album")
+
+    release_date = result.get("release_date", "")
+    year = release_date.split("-")[0] if release_date else "?"
+
+    link = result.get("song_link")
+
+    # TEXT
+    _center_text(draw, title, 10, font_big)
+    _center_text(draw, artist, 45, font_small)
+    _center_text(draw, album, 75, font_small)
+    _center_text(draw, f"{year}", 105, font_small)
+
+    # QR
+    if link:
+        qr = _make_qr(link, size=120)
+        image.paste(qr, ((W - 120) // 2, 135))
+    else:
+        _center_text(draw, "No link available", 150, font_small)
 
     _render(image)

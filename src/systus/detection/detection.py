@@ -20,9 +20,6 @@ class DetectionController:
         self.listen_start_time = 0
         self.listen_duration = 10
 
-        self.think_start_time = 0
-        self.think_timeout = 10
-
         self.last_render_state = None
 
         # AUDIO
@@ -34,69 +31,67 @@ class DetectionController:
 
         self.wav_path = None
         self.result = None
+        self.ui_result = None
 
 
     # -------------------------
-    # START DETECTION
+    # START
     # ------------------------
     def start(self):
         if self.state in (RunState.IDLE, RunState.RESULT):
             self.state = RunState.LISTENING
             self.listen_start_time = time.time()
 
-            self.wav_path = self.recorder.record(self.listen_duration)
+            try:
+                self.wav_path = self.recorder.record(self.listen_duration)
+            except Exception as e:
+                print("RECORDER ERROR:", e)
+                self.state = RunState.RESULT
+                self.ui_result = None
 
+    # -------------------------
+    # BUILD UI DATA
+    # -------------------------
+    def _build_ui_result(self, result: dict | None):
+        if not result:
+            return None
+
+        return {
+            "title": result.get("title"),
+            "artist": result.get("artist"),
+            "album": result.get("album"),
+            "release_date": result.get("release_date"),
+            "song_link": result.get("song_link"),
+        }
 
     # -------------------------
     # UPDATE LOOP
     # -------------------------
     def update(self, now: float):
 
-        # -------------------------
         # LISTENING
-        # -------------------------
         if self.state == RunState.LISTENING:
 
             if now - self.listen_start_time >= self.listen_duration:
                 self.state = RunState.THINKING
-                self.think_start_time = time.time()
 
-        # -------------------------
         # THINKING
-        # -------------------------
         elif self.state == RunState.THINKING:
 
-            # timeout protection
-            if time.time() - self.think_start_time > self.think_timeout:
-                self.result = {
-                    "error": "Systus couldn't identify the song. Please try again."
-                }
-                self.state = RunState.RESULT
-
-                if self.wav_path:
-                    self.recorder.cleanup(self.wav_path)
-                    self.wav_path = None
-                return
-
-            if self.wav_path is None:
+            if not self.wav_path:
                 return
 
             try:
                 self.result = self.audd.recognize_file(self.wav_path)
             except Exception as e:
                 self.result = {"error": str(e)}
-            finally:
-                if self.wav_path:
-                    self.recorder.cleanup(self.wav_path)
-                    self.wav_path = None
+
+            self.ui_result = self._build_ui_result(self.result)
+
+            self.recorder.cleanup(self.wav_path)
+            self.wav_path = None
 
             self.state = RunState.RESULT
-
-        # -------------------------
-        # RESULT
-        # -------------------------
-        elif self.state == RunState.RESULT:
-            pass
 
     # -------------------------
     # RENDER
@@ -116,8 +111,10 @@ class DetectionController:
             screen.show_thinking()
 
         elif self.state == RunState.RESULT:
-            print("RESULT =", self.result)
-            screen.show_result_placeholder()
+            if self.ui_result:
+                screen.show_result(self.ui_result)
+            else:
+                screen.show_result_placeholder()
 
         self.last_render_state = self.state
 
@@ -128,8 +125,8 @@ class DetectionController:
     def reset(self):
         self.state = RunState.IDLE
         self.listen_start_time = 0
-        self.think_start_time = 0
         self.last_render_state = None
 
         self.wav_path = None
         self.result = None
+        self.ui_result = None
