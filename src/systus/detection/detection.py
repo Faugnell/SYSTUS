@@ -1,10 +1,10 @@
 import time
 from enum import Enum
-import tempfile
 
 import systus.display.screen as screen
 from systus.audio_capture.recorder import AudioRecorder
 from systus.detection.audd_client import AudDClient
+
 
 class RunState(str, Enum):
     IDLE = "idle"
@@ -21,7 +21,7 @@ class DetectionController:
         self.listen_duration = 10
 
         self.think_start_time = 0
-        self.think_duration = 2
+        self.think_timeout = 10
 
         self.last_render_state = None
 
@@ -32,7 +32,7 @@ class DetectionController:
             api_token="a1f8dc29dd7765e68f96e90dc26b8cbc"
         )
 
-        self.audio_buffer = None
+        self.wav_path = None
         self.result = None
 
 
@@ -44,56 +44,57 @@ class DetectionController:
             self.state = RunState.LISTENING
             self.listen_start_time = time.time()
 
-    # -------------------------
-    # AUDIO → FILE
-    # -------------------------
-    def _save_audio_temp(self, audio):
-        """
-        AudD API needs a file, so we convert numpy → wav file.
-        """
+            self.wav_path = self.recorder.record(self.listen_duration)
 
-        import soundfile as sf
-
-        tmp_file = tempfile.NamedTemporaryFile(
-            suffix=".wav",
-            delete=False
-        )
-
-        sf.write(tmp_file.name, audio, 48000)
-
-        return tmp_file.name
 
     # -------------------------
     # UPDATE LOOP
     # -------------------------
     def update(self, now: float):
 
+        # -------------------------
         # LISTENING
+        # -------------------------
         if self.state == RunState.LISTENING:
 
             if now - self.listen_start_time >= self.listen_duration:
-                # 1. record audio
-                self.audio_buffer = self.recorder.record(self.listen_duration)
-
-                # 2. go THINKING
                 self.state = RunState.THINKING
-                self.think_start_time = now
+                self.think_start_time = time.time()
 
+        # -------------------------
         # THINKING
+        # -------------------------
         elif self.state == RunState.THINKING:
 
-            if now - self.think_start_time >= self.think_duration:
-
-                # 1. convert audio → file
-                wav_path = self._save_audio_temp(self.audio_buffer)
-
-                # 2. call AudD
-                self.result = self.audd.recognize_file(wav_path)
-
-                # 3. go RESULT
+            # timeout protection
+            if time.time() - self.think_start_time > self.think_timeout:
+                self.result = {
+                    "error": "Systus couldn't identify the song. Please try again."
+                }
                 self.state = RunState.RESULT
 
+                if self.wav_path:
+                    self.recorder.cleanup(self.wav_path)
+                    self.wav_path = None
+                return
+
+            if self.wav_path is None:
+                return
+
+            try:
+                self.result = self.audd.recognize_file(self.wav_path)
+            except Exception as e:
+                self.result = {"error": str(e)}
+            finally:
+                if self.wav_path:
+                    self.recorder.cleanup(self.wav_path)
+                    self.wav_path = None
+
+            self.state = RunState.RESULT
+
+        # -------------------------
         # RESULT
+        # -------------------------
         elif self.state == RunState.RESULT:
             pass
 
@@ -120,6 +121,7 @@ class DetectionController:
 
         self.last_render_state = self.state
 
+
     # -------------------------
     # RESET
     # -------------------------
@@ -128,4 +130,6 @@ class DetectionController:
         self.listen_start_time = 0
         self.think_start_time = 0
         self.last_render_state = None
-        self.audio_buffer = None
+
+        self.wav_path = None
+        self.result = None
