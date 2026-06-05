@@ -113,10 +113,8 @@ class DetectionController:
         elif self.state == RunState.RESULT:
             if self.ui_result:
                 screen.show_result(self.ui_result)
-            else:
-                screen.show_result_placeholder()
 
-        self.last_render_state = self.state
+                self.last_render_state = self.state
 
 
     # -------------------------
