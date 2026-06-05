@@ -126,7 +126,7 @@ def main_loop():
                 detection.update(now)
                 detection.render()
 
-            time.sleep(0,2)
+            time.sleep(0.2)
 
     finally:
         buttons.cleanup()
