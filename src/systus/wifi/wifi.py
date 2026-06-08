@@ -1,92 +1,45 @@
-from flask import Flask, render_template, request
 import subprocess
-
-app = Flask(__name__)
-
-# -------------------------
-# WIFI SCAN
-# -------------------------
+import time
 
 def get_wifi_networks():
-    # force scan (IMPORTANT)
+    # 1) force rescan (important)
     subprocess.run(
-        ["sudo", "nmcli", "dev", "wifi", "rescan"],
+        ["nmcli", "dev", "wifi", "rescan"],
         capture_output=True,
         text=True
     )
 
+    # 2) laisse NetworkManager respirer (CRUCIAL)
+    time.sleep(2)
+
+    # 3) récupération propre avec BSSID (plus fiable que SSID seul)
     result = subprocess.run(
-        ["nmcli", "-t", "-f", "SSID", "dev", "wifi", "list"],
+        [
+            "nmcli",
+            "-t",
+            "-f",
+            "SSID,BSSID",
+            "dev",
+            "wifi",
+            "list",
+        ],
         capture_output=True,
         text=True
     )
 
-    networks = set()
+    networks = {}
 
     for line in result.stdout.splitlines():
-        ssid = line.strip()
-        if ssid:
-            networks.add(ssid)
+        parts = line.split(":")
+        if len(parts) < 2:
+            continue
 
-    return sorted(networks)
+        ssid = parts[0].strip()
 
+        if not ssid:
+            continue
 
-# -------------------------
-# ROUTES
-# -------------------------
+        # dédup par SSID (évite doublons AP)
+        networks[ssid] = True
 
-@app.route("/")
-def home():
-    return render_template(
-        "index.html",
-        networks=get_wifi_networks(),
-    )
-
-
-@app.route("/wifi", methods=["POST"])
-def wifi():
-    ssid = request.form["ssid"]
-    password = request.form["password"]
-
-    print(f"[WIFI] Connecting to {ssid}")
-
-    try:
-        # DELETE old connection if exists (important)
-        subprocess.run(
-            ["sudo", "nmcli", "connection", "delete", ssid],
-            capture_output=True,
-            text=True
-        )
-
-        # CREATE connection
-        subprocess.run(
-            [
-                "sudo", "nmcli",
-                "dev", "wifi", "connect",
-                ssid,
-                "password", password,
-                "ifname", "wlan0"
-            ],
-            check=True,
-            capture_output=True,
-            text=True
-        )
-
-        return f"""
-        <h2>✅ Connected successfully</h2>
-        <b>{ssid}</b>
-        """
-
-    except subprocess.CalledProcessError as e:
-        return f"""
-        <h2>❌ Connection failed</h2>
-        <pre>{e.stderr}</pre>
-        """
-
-
-if __name__ == "__main__":
-    app.run(
-        host="0.0.0.0",
-        port=5000,
-        debug=False
-    )
+    return sorted(networks.keys())
