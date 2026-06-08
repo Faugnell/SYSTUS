@@ -1,28 +1,61 @@
 from flask import Flask, render_template, request
 import subprocess
+import threading
+import time
 
 app = Flask(__name__)
 
 # -------------------------
-# WIFI SCAN
+# CACHE GLOBAL WIFI
 # -------------------------
 
-def get_wifi_networks():
-    subprocess.run(["nmcli", "dev", "wifi", "rescan"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+wifi_cache = []
+wifi_lock = threading.Lock()
 
-    result = subprocess.run(
-        ["nmcli", "-t", "-f", "SSID", "dev", "wifi", "list"],
-        capture_output=True,
-        text=True,
-    )
 
-    networks = []
-    for line in result.stdout.splitlines():
-        ssid = line.strip()
-        if ssid and ssid not in networks:
-            networks.append(ssid)
+# -------------------------
+# WIFI SCANNER BACKGROUND
+# -------------------------
 
-    return sorted(networks)
+def scan_wifi_loop():
+    global wifi_cache
+
+    while True:
+        try:
+            # refresh scan (non bloquant)
+            subprocess.run(
+                ["nmcli", "dev", "wifi", "rescan"],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+
+            time.sleep(2)  # laisse le temps au driver
+
+            result = subprocess.run(
+                ["nmcli", "-t", "-f", "SSID", "dev", "wifi", "list", "ifname", "wlan0"],
+                capture_output=True,
+                text=True,
+            )
+
+            networks = set()
+
+            for line in result.stdout.splitlines():
+                ssid = line.strip()
+                if ssid and ssid != "--":
+                    networks.add(ssid)
+
+            with wifi_lock:
+                wifi_cache = sorted(networks)
+
+        except Exception as e:
+            print("[WIFI SCAN ERROR]", e)
+
+        time.sleep(5)  # scan toutes les 5 secondes
+
+
+# start thread au lancement
+threading.Thread(target=scan_wifi_loop, daemon=True).start()
+
 
 # -------------------------
 # ROUTES
@@ -30,10 +63,11 @@ def get_wifi_networks():
 
 @app.route("/", methods=["GET"])
 def home():
-    return render_template(
-        "index.html",
-        networks=get_wifi_networks(),
-    )
+    with wifi_lock:
+        networks = wifi_cache.copy()
+
+    return render_template("index.html", networks=networks)
+
 
 @app.route("/wifi", methods=["POST"])
 def wifi():
@@ -43,7 +77,7 @@ def wifi():
     print(f"[WIFI] Connecting to {ssid}")
 
     try:
-        # 1) create connection profile
+        # create connection profile
         subprocess.run([
             "nmcli",
             "connection",
@@ -54,7 +88,7 @@ def wifi():
             "ssid", ssid,
         ], check=True)
 
-        # 2) set security (IMPORTANT FIX)
+        # security fix
         subprocess.run([
             "nmcli",
             "connection",
@@ -64,7 +98,7 @@ def wifi():
             "wifi-sec.psk", password,
         ], check=True)
 
-        # 3) activate
+        # activate
         subprocess.run([
             "nmcli",
             "connection",
@@ -82,6 +116,7 @@ def wifi():
         <h2>❌ Connection failed</h2>
         <pre>{e}</pre>
         """
+
 
 # -------------------------
 # RUN
