@@ -1,29 +1,42 @@
 from flask import Flask, render_template, request
 import subprocess
+import time
 
 app = Flask(__name__)
-
 
 # -------------------------
 # WIFI SCAN
 # -------------------------
 def get_wifi_networks():
-    # refresh scan
-    subprocess.run(["nmcli", "dev", "wifi", "rescan"], capture_output=True)
+    # Force scan (non bloquant)
+    subprocess.run(
+        ["nmcli", "dev", "wifi", "rescan"],
+        capture_output=True
+    )
+
+    # IMPORTANT: laisse NetworkManager finir le scan
+    time.sleep(2)
 
     result = subprocess.run(
-        ["nmcli", "-t", "-f", "SSID", "dev", "wifi", "list"],
+        [
+            "nmcli",
+            "-t",
+            "--fields",
+            "SSID",
+            "dev",
+            "wifi",
+            "list",
+        ],
         capture_output=True,
         text=True,
     )
 
-    networks = []
+    networks = set()
 
     for line in result.stdout.splitlines():
         ssid = line.strip()
-
-        if ssid and ssid not in networks:
-            networks.append(ssid)
+        if ssid:
+            networks.add(ssid)
 
     return sorted(networks)
 
@@ -47,7 +60,7 @@ def wifi():
     print(f"[WIFI] Connecting to SSID={ssid}")
 
     try:
-        # 🔥 SIMPLE & ROBUST WAY (NO PROFILE MANAGEMENT)
+        # 🔥 SIMPLE & ROBUST CONNECTION (no profile creation)
         result = subprocess.run(
             [
                 "nmcli",
@@ -72,8 +85,8 @@ def wifi():
         """
 
     except subprocess.CalledProcessError as e:
-        print(e.stdout)
-        print(e.stderr)
+        print("[ERROR STDOUT]", e.stdout)
+        print("[ERROR STDERR]", e.stderr)
 
         return f"""
         <h2>❌ Connection failed</h2>
