@@ -1,48 +1,108 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>SYSTUS WiFi Setup</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .box {
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            max-width: 400px;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+        }
+
+        button {
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .status {
+            font-size: 13px;
+            color: gray;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 
 <body>
 
-    <h1>SYSTUS WiFi Setup</h1>
+<h1>🔧 SYSTUS WiFi Setup</h1>
+
+<div class="box">
 
     <form action="/wifi" method="post">
 
-        <label>Network</label>
+        <label>Available networks</label>
 
-        <select name="ssid">
+        <div class="row">
+            <select name="ssid" id="ssid">
+                {% for network in networks %}
+                    <option value="{{ network }}">{{ network }}</option>
+                {% endfor %}
+            </select>
 
-            {% for network in networks %}
-                <option value="{{ network }}">
-                    {{ network }}
-                </option>
-            {% endfor %}
-
-        </select>
-
-        <form method="POST" action="/wifi/refresh">
-            <button type="submit">🔄 Refresh WiFi List</button>
-        </form>
-
-        <br><br>
+            <button type="button" onclick="refreshWifi()">🔄</button>
+        </div>
 
         <label>Password</label>
+        <input type="password" name="password" required>
 
-        <input
-            type="password"
-            name="password"
-            required
-        >
-
-        <br><br>
-
-        <button type="submit">
-            Connect
-        </button>
+        <button type="submit">Connect</button>
 
     </form>
+
+    <div class="status" id="status">
+        Ready.
+    </div>
+
+</div>
+
+<script>
+async function refreshWifi() {
+    const status = document.getElementById("status");
+
+    status.innerText = "Scanning WiFi networks...";
+
+    try {
+        await fetch("/wifi/refresh", {
+            method: "POST"
+        });
+
+        status.innerText = "Refreshing list...";
+
+        // reload page AFTER scan (simple & reliable)
+        setTimeout(() => {
+            location.reload();
+        }, 1500);
+
+    } catch (e) {
+        status.innerText = "Error refreshing WiFi list.";
+    }
+}
+</script>
 
 </body>
 </html>
