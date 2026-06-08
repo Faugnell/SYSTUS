@@ -49,15 +49,24 @@ def wifi():
 
     print(f"SSID={ssid}")
 
-    cmd = [
-        "nmcli",
-        "dev",
-        "wifi",
-        "connect",
-        ssid,
-        "password",
-        password,
-    ]
+    if password:
+        cmd = [
+            "nmcli",
+            "dev",
+            "wifi",
+            "connect",
+            ssid,
+            "password",
+            password,
+        ]
+    else:
+        cmd = [
+            "nmcli",
+            "dev",
+            "wifi",
+            "connect",
+            ssid,
+        ]
 
     try:
 

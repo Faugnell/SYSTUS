@@ -44,7 +44,7 @@ def show_setup():
     _center_text(draw, "SETUP MODE", 40, font_big)
     _center_text(draw, "Scan to setup Wifi for SYSTUS:", 70, font_small)
 
-    qr = qrcode.make("http://systus.local:5000")
+    qr = qrcode.make("http://10.0.0.32:5000")
     qr = qr.resize((140, 140))
 
     image.paste(qr, ((W - 140) // 2, 110))
