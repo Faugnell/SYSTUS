@@ -32,10 +32,14 @@ def scan_wifi_loop():
             time.sleep(2)  # laisse le temps au driver
 
             result = subprocess.run(
-                ["nmcli", "-t", "-f", "SSID", "dev", "wifi", "list", "ifname", "wlan0"],
+                ["nmcli", "dev", "wifi", "rescan"],
                 capture_output=True,
                 text=True,
             )
+
+            print(result.returncode)
+            print(result.stdout)
+            print(result.stderr)
 
             networks = set()
 
