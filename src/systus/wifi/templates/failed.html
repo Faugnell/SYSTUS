@@ -1,29 +1,94 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>SYSTUS WiFi</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <meta charset="UTF-8">
+    <title>WiFi Failed</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border-radius: 18px;
+            padding: 40px;
+            width: 90%;
+            max-width: 420px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+
+        .icon {
+            font-size: 60px;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            margin: 10px 0;
+            font-size: 26px;
+            color: #f87171;
+        }
+
+        .subtitle {
+            opacity: 0.8;
+            margin-bottom: 25px;
+        }
+
+        .error {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 10px;
+            background: rgba(248, 113, 113, 0.1);
+            color: #fca5a5;
+            font-size: 14px;
+            word-break: break-word;
+        }
+
+        .btn {
+            margin-top: 25px;
+            display: inline-block;
+            padding: 10px 16px;
+            border-radius: 10px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .btn:hover {
+            background: #1d4ed8;
+        }
+    </style>
 </head>
+
 <body>
 
-<div class="container">
+<div class="card">
 
-    <div class="card">
+    <div class="icon">❌</div>
 
-        <h1>❌ Connection failed</h1>
+    <h1>Connection failed</h1>
 
-        <p class="subtitle">
-            Unable to connect to the selected WiFi network.
-        </p>
-
-        <button
-            class="primary"
-            onclick="window.location.href='/'"
-        >
-            Try Again
-        </button>
-
+    <div class="subtitle">
+        We were unable to connect to the network
     </div>
+
+    {% if error %}
+    <div class="error">
+        {{ error }}
+    </div>
+    {% endif %}
+
+    <a class="btn" href="/">Try again</a>
 
 </div>
 

@@ -1,33 +1,88 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>SYSTUS WiFi</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <meta charset="UTF-8">
+    <title>WiFi Connected</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border-radius: 18px;
+            padding: 40px;
+            width: 90%;
+            max-width: 420px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+
+        .icon {
+            font-size: 60px;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            margin: 10px 0;
+            font-size: 26px;
+        }
+
+        .subtitle {
+            opacity: 0.8;
+            margin-bottom: 25px;
+        }
+
+        .ssid {
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 18px;
+            color: #34d399;
+        }
+
+        .btn {
+            margin-top: 25px;
+            display: inline-block;
+            padding: 10px 16px;
+            border-radius: 10px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .btn:hover {
+            background: #1d4ed8;
+        }
+    </style>
 </head>
+
 <body>
 
-<div class="container">
+<div class="card">
 
-    <div class="card">
+    <div class="icon">✅</div>
 
-        <h1>✅ Connected</h1>
+    <h1>Connected</h1>
 
-        <p class="subtitle">
-            SYSTUS is now connected to:
-        </p>
-
-        <div class="network-name">
-            {{ ssid }}
-        </div>
-
-        <button
-            class="primary"
-            onclick="window.location.href='/'"
-        >
-            Back
-        </button>
-
+    <div class="subtitle">
+        Your device is now connected to WiFi
     </div>
+
+    <div class="ssid">
+        {{ ssid }}
+    </div>
+
+    <a class="btn" href="/">Back</a>
 
 </div>
 
