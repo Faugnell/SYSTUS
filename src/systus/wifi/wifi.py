@@ -133,6 +133,12 @@ def wifi():
 
         print(f"[WIFI] Successfully connected to {ssid}")
 
+        try:
+            import systus.app as app_state
+            app_state.on_wifi_connected()
+        except Exception as e:
+            print("[WARN] Could not notify app state:", e)
+
         return render_template(
             "success.html",
             ssid=ssid,

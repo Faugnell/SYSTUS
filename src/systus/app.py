@@ -57,6 +57,21 @@ def get_current_mode():
 
     return manual_mode if manual_mode is not None else boot_mode
 
+def on_wifi_connected():
+    """
+    Called when WiFi is successfully connected from Flask app.
+    Forces system into RUNNING mode.
+    """
+
+    global manual_mode
+
+    print("[SYSTEM] WiFi connected → switching to RUNNING")
+
+    manual_mode = AppMode.RUNNING
+
+    # refresh display immediately
+    screen.show_idle()  # ou show_running selon ton UI
+
 
 # -------------------------
 # MODE TOGGLE
