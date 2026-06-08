@@ -11,7 +11,6 @@ app = Flask(__name__)
 def get_wifi_networks():
 
     try:
-        # force un vrai scan
         subprocess.run(
             ["sudo", "nmcli", "dev", "wifi", "rescan"],
             stdout=subprocess.DEVNULL,
@@ -49,7 +48,8 @@ def get_wifi_networks():
 
     except Exception as e:
 
-        print("[WIFI SCAN ERROR]", e)
+        print("[WIFI SCAN ERROR]")
+        print(e)
 
         return []
 
@@ -131,18 +131,30 @@ def wifi():
             check=True,
         )
 
-        return f"""
-        <h2>✅ Connected successfully</h2>
-        <p>SYSTUS connected to:</p>
-        <b>{ssid}</b>
-        """
+        print(f"[WIFI] Successfully connected to {ssid}")
+
+        return render_template(
+            "success.html",
+            ssid=ssid,
+        )
 
     except subprocess.CalledProcessError as e:
 
-        return f"""
-        <h2>❌ Connection failed</h2>
-        <pre>{e}</pre>
-        """
+        print("[WIFI ERROR]")
+        print(e)
+
+        return render_template(
+            "failed.html",
+        )
+
+    except Exception as e:
+
+        print("[UNEXPECTED WIFI ERROR]")
+        print(e)
+
+        return render_template(
+            "failed.html",
+        )
 
 # -------------------------
 # RUN
