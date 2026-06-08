@@ -68,6 +68,40 @@ def home():
 
     return render_template("index.html", networks=networks)
 
+@app.route("/wifi/refresh", methods=["POST"])
+def refresh_wifi():
+    global wifi_cache
+
+    try:
+        subprocess.run(
+            ["nmcli", "dev", "wifi", "rescan"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+
+        time.sleep(2)
+
+        result = subprocess.run(
+            ["nmcli", "-t", "-f", "SSID", "dev", "wifi", "list", "ifname", "wlan0"],
+            capture_output=True,
+            text=True,
+        )
+
+        networks = set()
+
+        for line in result.stdout.splitlines():
+            ssid = line.strip()
+            if ssid and ssid != "--":
+                networks.add(ssid)
+
+        with wifi_lock:
+            wifi_cache = sorted(networks)
+
+        return ("OK", 200)
+
+    except Exception as e:
+        return (str(e), 500)
+
 
 @app.route("/wifi", methods=["POST"])
 def wifi():
