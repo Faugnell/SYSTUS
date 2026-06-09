@@ -7,8 +7,8 @@ class ButtonController:
     def __init__(self, on_mode_toggle, on_action):
 
         # debounce HARDWARE + logiciel
-        self.mode_button = Button(5, bounce_time=0.15)
-        self.action_button = Button(6, bounce_time=0.15)
+        self.mode_button = Button(5)
+        self.action_button = Button(6)
 
         self.on_mode_toggle = on_mode_toggle
         self.on_action = on_action
