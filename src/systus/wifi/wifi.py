@@ -3,6 +3,8 @@ import subprocess
 import time
 
 
+
+
 def create_wifi_app(on_connected_callback):
 
     app = Flask(__name__)
@@ -14,7 +16,7 @@ def create_wifi_app(on_connected_callback):
     def get_wifi_networks():
         try:
             subprocess.run(
-                ["nmcli", "dev", "wifi", "rescan"],
+                ["sudo", "nmcli", "dev", "wifi", "rescan"],
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
             )
@@ -43,6 +45,15 @@ def create_wifi_app(on_connected_callback):
     # -------------------------
     # ROUTES
     # -------------------------
+    @app.route("/scan", methods=["GET"])
+    def scan():
+
+        networks = get_wifi_networks()
+
+        return {
+            "networks": networks,
+            "count": len(networks),
+        }
 
     @app.route("/", methods=["GET"])
     def home():
@@ -56,32 +67,86 @@ def create_wifi_app(on_connected_callback):
         print(f"[WIFI] Connecting to {ssid}")
 
         try:
+
+            # Supprime une éventuelle ancienne configuration
             subprocess.run(
                 [
+                    "sudo",
                     "nmcli",
-                    "dev",
-                    "wifi",
-                    "connect",
+                    "connection",
+                    "delete",
                     ssid,
-                    "password",
+                ],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+
+            # Création de la connexion
+            subprocess.run(
+                [
+                    "sudo",
+                    "nmcli",
+                    "connection",
+                    "add",
+                    "type",
+                    "wifi",
+                    "ifname",
+                    "wlan0",
+                    "con-name",
+                    ssid,
+                    "ssid",
+                    ssid,
+                ],
+                check=True,
+            )
+
+            # Configuration WPA2
+            subprocess.run(
+                [
+                    "sudo",
+                    "nmcli",
+                    "connection",
+                    "modify",
+                    ssid,
+                    "wifi-sec.key-mgmt",
+                    "wpa-psk",
+                    "wifi-sec.psk",
                     password,
                 ],
                 check=True,
             )
 
-            print(f"[WIFI] Connected to {ssid}")
+            # Connexion
+            subprocess.run(
+                [
+                    "sudo",
+                    "nmcli",
+                    "connection",
+                    "up",
+                    ssid,
+                ],
+                check=True,
+            )
 
-            # 🔥 IMPORTANT FIX
+            print(f"[WIFI] Successfully connected to {ssid}")
+
             on_connected_callback(ssid)
 
-            return render_template("success.html", ssid=ssid)
+            return render_template(
+                "success.html",
+                ssid=ssid,
+            )
 
         except subprocess.CalledProcessError as e:
-            print("[WIFI ERROR]", e)
+            print("[WIFI ERROR]")
+            print(e)
             return render_template("failed.html")
-
+    
         except Exception as e:
-            print("[UNEXPECTED WIFI ERROR]", e)
+
+            print("[UNEXPECTED WIFI ERROR]")
+            print(e)
+
             return render_template("failed.html")
 
     return app

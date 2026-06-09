@@ -193,56 +193,141 @@ button.primary {
 
         <div class="wifi-row">
 
-            <select name="ssid">
+            <select
+                name="ssid"
+                id="ssid-select"
+            >
                 {% if networks and networks|length > 0 %}
                     {% for network in networks %}
-                        <option value="{{ network }}">{{ network }}</option>
+                        <option value="{{ network }}">
+                            {{ network }}
+                        </option>
                     {% endfor %}
                 {% else %}
-                    <option disabled selected>No networks found</option>
+                    <option disabled selected>
+                        No networks found
+                    </option>
                 {% endif %}
             </select>
 
             <button
+                id="refresh-btn"
                 class="refresh-btn"
                 type="button"
-                onclick="window.location.reload()"
+                onclick="refreshNetworks()"
             >
                 <span>⟳</span>
             </button>
 
         </div>
 
-        <label>Password</label>
-        <input type="password" name="password" placeholder="••••••••" required>
+        <div
+            id="wifi-status"
+            style="
+                margin-top:8px;
+                font-size:13px;
+                opacity:0.7;
+            "
+        >
+            Ready
+        </div>
 
-        <button class="primary" type="submit">
+        <label>Password</label>
+
+        <input
+            type="password"
+            name="password"
+            placeholder="••••••••"
+            required
+        >
+
+        <button
+            class="primary"
+            type="submit"
+        >
             Connect
         </button>
 
     </form>
+
 </div>
 
 </div>
 
 <script>
-async function refreshWifi() {
-    const status = document.getElementById("status");
-    status.innerText = "Scanning networks...";
+
+async function refreshNetworks() {
+
+    const status =
+        document.getElementById("wifi-status");
+
+    const select =
+        document.getElementById("ssid-select");
+
+    const refreshButton =
+        document.getElementById("refresh-btn");
+
+    status.textContent = "Scanning networks...";
+
+    refreshButton.disabled = true;
 
     try {
-        await fetch("/wifi/refresh", { method: "POST" });
 
-        status.innerText = "Updating...";
+        const response =
+            await fetch("/scan");
 
-        setTimeout(() => {
-            location.reload();
-        }, 900);
+        const data =
+            await response.json();
 
-    } catch (e) {
-        status.innerText = "Refresh failed";
+        select.innerHTML = "";
+
+        if (data.networks.length === 0) {
+
+            const option =
+                document.createElement("option");
+
+            option.textContent =
+                "No networks found";
+
+            option.disabled = true;
+            option.selected = true;
+
+            select.appendChild(option);
+
+        } else {
+
+            data.networks.forEach(network => {
+
+                const option =
+                    document.createElement("option");
+
+                option.value = network;
+                option.textContent = network;
+
+                select.appendChild(option);
+
+            });
+
+        }
+
+        status.textContent =
+            `${data.count} network(s) found`;
+
+    } catch (error) {
+
+        console.error(error);
+
+        status.textContent =
+            "Scan failed";
+
+    } finally {
+
+        refreshButton.disabled = false;
+
     }
+
 }
+
 </script>
 
 </body>
