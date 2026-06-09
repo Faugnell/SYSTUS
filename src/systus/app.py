@@ -132,6 +132,13 @@ def main_loop():
             # -------------------------
             if mode != last_mode:
                 print(f"[MODE CHANGE] → {mode}")
+
+                if mode == AppMode.SETUP:
+                    screen.show_setup()
+
+                elif mode == AppMode.RUNNING:
+                    screen.show_idle()
+
                 last_mode = mode
 
             if mode == AppMode.RUNNING:
