@@ -64,11 +64,15 @@ def get_current_mode():
 # MODE TOGGLE
 # -------------------------
 def toggle_mode():
+    global manual_mode
+
     current = get_current_mode()
 
     if manual_mode is None:
         set_mode(
-            AppMode.SETUP if current == AppMode.RUNNING else AppMode.RUNNING
+            AppMode.SETUP
+            if current == AppMode.RUNNING
+            else AppMode.RUNNING
         )
     else:
         manual_mode = None
