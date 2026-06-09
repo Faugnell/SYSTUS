@@ -238,7 +238,6 @@ button.primary {
         <div class="status-slot">
             <div id="wifi-status" class="wifi-status"></div>
         </div>
-
         <label>Password</label>
 
         <input
@@ -262,15 +261,25 @@ button.primary {
 </div>
 
 <script>
+    function setStatus(text) {
+        const status = document.getElementById("wifi-status");
+        status.textContent = text;
+    }
+
+    function setInitialStatus(count) {
+        setStatus(`${count} network(s) found`);
+    }
+
     async function refreshNetworks() {
 
         const status = document.getElementById("wifi-status");
         const select = document.getElementById("ssid-select");
         const refreshButton = document.getElementById("refresh-btn");
 
-        status.textContent = "Scanning networks...";
-
         refreshButton.disabled = true;
+
+        // ÉTAT 1 : scanning
+        setStatus("Scanning networks...");
 
         try {
             const response = await fetch("/scan");
@@ -284,8 +293,9 @@ button.primary {
                 option.textContent = "No networks found";
                 option.disabled = true;
                 option.selected = true;
-
                 select.appendChild(option);
+
+                setStatus("0 network(s) found");
 
             } else {
 
@@ -296,17 +306,25 @@ button.primary {
                     select.appendChild(option);
                 });
 
+                // ÉTAT FINAL
+                setStatus(`${data.count} network(s) found`);
             }
-
-            status.textContent = `${data.count} network(s) found`;
 
         } catch (error) {
             console.error(error);
-            status.textContent = "Scan failed";
+            setStatus("Scan failed");
         }
 
         refreshButton.disabled = false;
     }
+
+    // état initial (important)
+    window.addEventListener("DOMContentLoaded", () => {
+        const select = document.getElementById("ssid-select");
+
+        const count = select.options.length;
+        setInitialStatus(count);
+    });
 </script>
 
 </body>
