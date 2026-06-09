@@ -5,7 +5,7 @@ from __future__ import annotations
 import subprocess
 import time
 from enum import Enum
-from threading import Thread
+from threading import Thread, Lock
 
 import systus.display.screen as screen
 from systus.buttons.controller import ButtonController
@@ -13,24 +13,21 @@ from systus.detection.detection import DetectionController
 from systus.wifi.wifi import create_wifi_app
 
 # -------------------------
-# CLASSES
+# STATE
 # -------------------------
 class AppMode(str, Enum):
     SETUP = "setup"
     RUNNING = "running"
 
 
-# -------------------------
-# STATE GLOBAL
-# -------------------------
-boot_mode: AppMode | None = None
-manual_mode: AppMode | None = None
+current_mode: AppMode | None = None
+mode_lock = Lock()
 
 detection = DetectionController()
 
 
 # -------------------------
-# WIFI SETUP
+# WIFI STATE
 # -------------------------
 def is_wifi_connected() -> bool:
     try:
@@ -45,65 +42,51 @@ def is_wifi_connected() -> bool:
 
 
 def init_mode():
-    global boot_mode
-    boot_mode = AppMode.RUNNING if is_wifi_connected() else AppMode.SETUP
-
-
-def get_current_mode():
-    global boot_mode, manual_mode
-
-    if boot_mode is None:
-        init_mode()
-
-    if manual_mode is not None:
-        return manual_mode
-
-    return boot_mode
+    global current_mode
+    current_mode = AppMode.RUNNING if is_wifi_connected() else AppMode.SETUP
 
 
 # -------------------------
-# MODE TOGGLE
+# MODE MANAGEMENT
 # -------------------------
+
+def set_mode(new_mode: AppMode, source: str = "system"):
+    global current_mode
+
+    with mode_lock:
+        if current_mode == new_mode:
+            return
+
+        old = current_mode
+        current_mode = new_mode
+
+    print(f"[MODE] {old} → {new_mode} ({source})")
+    detection.reset()
+
+
 def toggle_mode():
-    current = get_current_mode()
+    global current_mode
 
-    if current == AppMode.RUNNING:
-        set_mode(AppMode.SETUP)
-    else:
-        set_mode(AppMode.RUNNING)
+    with mode_lock:
+        if current_mode == AppMode.RUNNING:
+            current_mode = AppMode.SETUP
+        else:
+            current_mode = AppMode.RUNNING
 
-def set_mode(mode: AppMode):
-    global manual_mode
+    print(f"[MODE] toggled → {current_mode}")
 
-    if manual_mode == mode:
-        return
 
-    print(f"[MODE FORCE] → {mode.value}")
-
-    manual_mode = mode
-
-    if mode == AppMode.SETUP:
-        detection.reset()
-        screen.show_setup()
-
-    elif mode == AppMode.RUNNING:
-        detection.reset()
-        screen.show_idle()
+def get_mode() -> AppMode:
+    return current_mode
 
 
 # -------------------------
 # WIFI CALLBACK
 # -------------------------
 def on_wifi_connected(ssid: str):
-    global boot_mode, manual_mode
+    print(f"[SYSTEM] WiFi connected → {ssid}")
+    set_mode(AppMode.RUNNING, "wifi")
 
-    print(f"[SYSTEM] WiFi connected → {ssid} → RUNNING")
-
-    boot_mode = AppMode.RUNNING
-    manual_mode = AppMode.RUNNING
-
-    detection.reset()
-    screen.show_idle()
 
 
 # -------------------------
@@ -118,7 +101,7 @@ def start_wifi_server():
 # DETECTION
 # -------------------------
 def start_detection():
-    if get_current_mode() == AppMode.RUNNING:
+    if get_mode() == AppMode.RUNNING:
         detection.start()
 
 
@@ -129,35 +112,28 @@ def main_loop():
 
     init_mode()
 
+    if current_mode == AppMode.SETUP:
+        screen.show_setup()
+    else:
+        screen.show_idle()
+
     Thread(target=start_wifi_server, daemon=True).start()
 
     buttons = ButtonController(toggle_mode, start_detection)
 
-    last_mode = None
-
     try:
+        last_mode = None
         while True:
-            mode = get_current_mode()
+            mode = get_mode()
             now = time.time()
 
             # -------------------------
             # MODE CHANGE
             # -------------------------
             if mode != last_mode:
-                print(f"[MODE CHANGE] → {mode.value}")
-
-                if mode == AppMode.SETUP:
-                    detection.reset()
-                    screen.show_setup()
-
-                elif mode == AppMode.RUNNING:
-                    detection.reset()
-
+                print(f"[MODE CHANGE] → {mode}")
                 last_mode = mode
 
-            # -------------------------
-            # RUNNING MODE
-            # -------------------------
             if mode == AppMode.RUNNING:
                 detection.update(now)
                 detection.render()
