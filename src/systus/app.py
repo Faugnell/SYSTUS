@@ -10,7 +10,6 @@ from threading import Thread
 import systus.display.screen as screen
 from systus.buttons.controller import ButtonController
 from systus.detection.detection import DetectionController
-
 from systus.wifi.wifi import create_wifi_app
 
 # -------------------------
@@ -26,7 +25,6 @@ class AppMode(str, Enum):
 # -------------------------
 boot_mode: AppMode | None = None
 manual_mode: AppMode | None = None
-wifi_lock: AppMode | None = None
 
 detection = DetectionController()
 
@@ -50,14 +48,12 @@ def init_mode():
     global boot_mode
     boot_mode = AppMode.RUNNING if is_wifi_connected() else AppMode.SETUP
 
+
 def get_current_mode():
-    global boot_mode, manual_mode, wifi_lock
+    global boot_mode, manual_mode
 
     if boot_mode is None:
         init_mode()
-
-    if wifi_lock is not None:
-        return wifi_lock
 
     if manual_mode is not None:
         return manual_mode
@@ -76,41 +72,43 @@ def toggle_mode():
     else:
         set_mode(AppMode.RUNNING)
 
-_last_mode = None
-
 def set_mode(mode: AppMode):
-    global manual_mode, _last_mode
+    global manual_mode
 
-    # anti spam STRICT
     if manual_mode == mode:
         return
-
-    if _last_mode == mode:
-        return
-
-    _last_mode = mode
 
     print(f"[MODE FORCE] → {mode.value}")
 
     manual_mode = mode
+
+    if mode == AppMode.SETUP:
+        detection.reset()
+        screen.show_setup()
+
+    elif mode == AppMode.RUNNING:
+        detection.reset()
+        screen.show_idle()
 
 
 # -------------------------
 # WIFI CALLBACK
 # -------------------------
 def on_wifi_connected(ssid: str):
-    global wifi_lock
+    global boot_mode, manual_mode
 
     print(f"[SYSTEM] WiFi connected → {ssid} → RUNNING")
 
-    wifi_lock = AppMode.RUNNING
+    boot_mode = AppMode.RUNNING
+    manual_mode = AppMode.RUNNING
 
     detection.reset()
     screen.show_idle()
 
-    print("[SYSTEM] WiFi lock activated")
 
-
+# -------------------------
+# WIFI SERVER
+# -------------------------
 def start_wifi_server():
     app = create_wifi_app(on_wifi_connected)
     app.run(host="0.0.0.0", port=5000, debug=False, use_reloader=False)
