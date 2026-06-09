@@ -71,12 +71,33 @@ def toggle_mode():
     else:
         set_mode(AppMode.RUNNING)
 
+        
+_last_mode = None
+
+
 def set_mode(mode: AppMode):
-    global manual_mode
+    global manual_mode, _last_mode
+
+    # anti spam global
+    if mode == manual_mode:
+        return
+
+    if mode == _last_mode:
+        return
+
+    _last_mode = mode
 
     print(f"[MODE FORCE] → {mode.value}")
 
     manual_mode = mode
+
+    if mode == AppMode.SETUP:
+        detection.reset()
+        screen.show_setup()
+
+    elif mode == AppMode.RUNNING:
+        detection.reset()
+        screen.show_idle()
 
 
 # -------------------------

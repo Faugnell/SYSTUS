@@ -165,6 +165,20 @@ button.primary {
     color: var(--muted);
 }
 
+.status-slot {
+    min-height: 18px;        /* espace réservé (important) */
+    margin: 10px 0 18px 0;   /* espace entre WiFi et Password */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.wifi-status {
+    font-size: 12px;
+    color: var(--muted);
+    opacity: 0.9;
+}
+
 /* =========================
    RESPONSIVE
 ========================= */
@@ -221,15 +235,8 @@ button.primary {
 
         </div>
 
-        <div
-            id="wifi-status"
-            style="
-                margin-top:8px;
-                font-size:13px;
-                opacity:0.7;
-            "
-        >
-            Ready
+        <div class="status-slot">
+            <div id="wifi-status" class="wifi-status"></div>
         </div>
 
         <label>Password</label>
@@ -255,79 +262,51 @@ button.primary {
 </div>
 
 <script>
+    async function refreshNetworks() {
 
-async function refreshNetworks() {
+        const status = document.getElementById("wifi-status");
+        const select = document.getElementById("ssid-select");
+        const refreshButton = document.getElementById("refresh-btn");
 
-    const status =
-        document.getElementById("wifi-status");
+        status.textContent = "Scanning networks...";
 
-    const select =
-        document.getElementById("ssid-select");
+        refreshButton.disabled = true;
 
-    const refreshButton =
-        document.getElementById("refresh-btn");
+        try {
+            const response = await fetch("/scan");
+            const data = await response.json();
 
-    status.textContent = "Scanning networks...";
+            select.innerHTML = "";
 
-    refreshButton.disabled = true;
+            if (data.networks.length === 0) {
 
-    try {
-
-        const response =
-            await fetch("/scan");
-
-        const data =
-            await response.json();
-
-        select.innerHTML = "";
-
-        if (data.networks.length === 0) {
-
-            const option =
-                document.createElement("option");
-
-            option.textContent =
-                "No networks found";
-
-            option.disabled = true;
-            option.selected = true;
-
-            select.appendChild(option);
-
-        } else {
-
-            data.networks.forEach(network => {
-
-                const option =
-                    document.createElement("option");
-
-                option.value = network;
-                option.textContent = network;
+                const option = document.createElement("option");
+                option.textContent = "No networks found";
+                option.disabled = true;
+                option.selected = true;
 
                 select.appendChild(option);
 
-            });
+            } else {
 
+                data.networks.forEach(network => {
+                    const option = document.createElement("option");
+                    option.value = network;
+                    option.textContent = network;
+                    select.appendChild(option);
+                });
+
+            }
+
+            status.textContent = `${data.count} network(s) found`;
+
+        } catch (error) {
+            console.error(error);
+            status.textContent = "Scan failed";
         }
 
-        status.textContent =
-            `${data.count} network(s) found`;
-
-    } catch (error) {
-
-        console.error(error);
-
-        status.textContent =
-            "Scan failed";
-
-    } finally {
-
         refreshButton.disabled = false;
-
     }
-
-}
-
 </script>
 
 </body>
