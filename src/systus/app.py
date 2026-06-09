@@ -24,8 +24,10 @@ class AppMode(str, Enum):
 # -------------------------
 # STATE GLOBAL
 # -------------------------
-manual_mode: AppMode | None = None
 boot_mode: AppMode | None = None
+manual_mode: AppMode | None = None
+wifi_lock: AppMode | None = None
+
 detection = DetectionController()
 
 
@@ -49,10 +51,13 @@ def init_mode():
     boot_mode = AppMode.RUNNING if is_wifi_connected() else AppMode.SETUP
 
 def get_current_mode():
-    global boot_mode
+    global boot_mode, manual_mode, wifi_lock
 
     if boot_mode is None:
         init_mode()
+
+    if wifi_lock is not None:
+        return wifi_lock
 
     if manual_mode is not None:
         return manual_mode
@@ -94,15 +99,16 @@ def set_mode(mode: AppMode):
 # WIFI CALLBACK
 # -------------------------
 def on_wifi_connected(ssid: str):
-    global manual_mode
+    global wifi_lock
 
     print(f"[SYSTEM] WiFi connected → {ssid} → RUNNING")
 
-    manual_mode = AppMode.RUNNING
+    wifi_lock = AppMode.RUNNING
+
     detection.reset()
     screen.show_idle()
 
-    print("[SYSTEM] Mode switched immediately to RUNNING")
+    print("[SYSTEM] WiFi lock activated")
 
 
 def start_wifi_server():
