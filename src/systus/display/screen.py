@@ -51,6 +51,40 @@ def show_setup():
 
     _render(image)
 
+def show_setup_connected():
+    image = Image.new("1", (W, H), 255)
+    draw = ImageDraw.Draw(image)
+
+    font_big = ImageFont.load_default()
+    font_small = ImageFont.load_default()
+
+    _center_text(draw, "SETUP MODE", 40, font_big)
+    _center_text(draw, "Scan to change WiFi for SYSTUS", 80, font_small)
+
+    qr = qrcode.make("http://10.0.0.32:5000")
+    qr = qr.resize((140, 140))
+    image.paste(qr, ((W - 140) // 2, 110))
+
+    _render(image)
+
+
+def show_setup_hotspot():
+    image = Image.new("1", (W, H), 255)
+    draw = ImageDraw.Draw(image)
+
+    font_big = ImageFont.load_default()
+    font_small = ImageFont.load_default()
+
+    _center_text(draw, "SETUP MODE", 40, font_big)
+    _center_text(draw, "Not connected to network.", 75, font_small)
+    _center_text(draw, "Scan to setup WiFi for SYSTUS", 100, font_small)
+
+    qr = qrcode.make("http://192.168.4.1:5000")  # hotspot IP typical
+    qr = qr.resize((140, 140))
+    image.paste(qr, ((W - 140) // 2, 120))
+
+    _render(image)
+
 
 # -------------------------
 # RUNNING MODE

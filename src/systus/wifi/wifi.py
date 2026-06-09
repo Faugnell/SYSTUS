@@ -3,8 +3,9 @@ import subprocess
 import time
 
 
-
-
+# -------------------------
+# WIFI SETUP
+# -------------------------
 def create_wifi_app(on_connected_callback):
 
     app = Flask(__name__)

@@ -41,43 +41,46 @@ def is_wifi_connected() -> bool:
         return False
 
 
-def init_mode():
-    global current_mode
-    current_mode = AppMode.RUNNING if is_wifi_connected() else AppMode.SETUP
-
-
 # -------------------------
 # MODE MANAGEMENT
 # -------------------------
-
 def set_mode(new_mode: AppMode, source: str = "system"):
     global current_mode
 
     with mode_lock:
+
         if current_mode == new_mode:
             return
 
         old = current_mode
         current_mode = new_mode
 
-    print(f"[MODE] {old} → {new_mode} ({source})")
-    detection.reset()
+        print(f"[MODE] {old} → {new_mode} ({source})")
+
+        # side effects centralisés
+        detection.reset()
+
+        if new_mode == AppMode.SETUP:
+            screen.show_setup()
+
+        elif new_mode == AppMode.RUNNING:
+            screen.show_idle()
 
 
 def toggle_mode():
-    global current_mode
-
     with mode_lock:
         if current_mode == AppMode.RUNNING:
-            current_mode = AppMode.SETUP
+            set_mode(AppMode.SETUP, "button")
         else:
-            current_mode = AppMode.RUNNING
-
-    print(f"[MODE] toggled → {current_mode}")
+            set_mode(AppMode.RUNNING, "button")
 
 
 def get_mode() -> AppMode:
     return current_mode
+
+def init_mode():
+    global current_mode
+    current_mode = AppMode.RUNNING if is_wifi_connected() else AppMode.SETUP
 
 
 # -------------------------
@@ -85,6 +88,7 @@ def get_mode() -> AppMode:
 # -------------------------
 def on_wifi_connected(ssid: str):
     print(f"[SYSTEM] WiFi connected → {ssid}")
+
     set_mode(AppMode.RUNNING, "wifi")
 
 
@@ -132,13 +136,6 @@ def main_loop():
             # -------------------------
             if mode != last_mode:
                 print(f"[MODE CHANGE] → {mode}")
-
-                if mode == AppMode.SETUP:
-                    screen.show_setup()
-
-                elif mode == AppMode.RUNNING:
-                    screen.show_idle()
-
                 last_mode = mode
 
             if mode == AppMode.RUNNING:
