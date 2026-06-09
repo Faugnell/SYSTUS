@@ -26,8 +26,8 @@ class AppMode(str, Enum):
 # -------------------------
 manual_mode: AppMode | None = None
 boot_mode: AppMode | None = None
-
 detection = DetectionController()
+
 
 # -------------------------
 # WIFI SETUP
@@ -64,36 +64,19 @@ def get_current_mode():
 # MODE TOGGLE
 # -------------------------
 def toggle_mode():
-    global manual_mode
-
     current = get_current_mode()
 
-    if manual_mode is None:
-        set_mode(
-            AppMode.SETUP
-            if current == AppMode.RUNNING
-            else AppMode.RUNNING
-        )
+    if current == AppMode.RUNNING:
+        set_mode(AppMode.SETUP)
     else:
-        manual_mode = None
+        set_mode(AppMode.RUNNING)
 
 def set_mode(mode: AppMode):
     global manual_mode
 
-    if manual_mode == mode:
-        return
-
     print(f"[MODE FORCE] → {mode.value}")
 
     manual_mode = mode
-
-    if mode == AppMode.SETUP:
-        detection.reset()
-        screen.show_setup()
-
-    elif mode == AppMode.RUNNING:
-        detection.reset()
-        screen.show_idle()
 
 
 # -------------------------
@@ -119,9 +102,6 @@ def start_wifi_server():
 # -------------------------
 # DETECTION
 # -------------------------
-detection = DetectionController()
-
-
 def start_detection():
     if get_current_mode() == AppMode.RUNNING:
         detection.start()
