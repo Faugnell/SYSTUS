@@ -1,0 +1,37 @@
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{geometry}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{titlesec}
+
+\geometry{margin=2.4cm}
+\setlist[itemize]{topsep=4pt,itemsep=2pt}
+\setlist[enumerate]{topsep=4pt,itemsep=2pt}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    urlcolor=blue,
+    pdfauthor={Antonin Mazaury et Victor Petit}
+}
+
+\definecolor{systusgray}{HTML}{F4F4F4}
+\definecolor{systusdark}{HTML}{1F2933}
+
+\lstdefinestyle{systus}{
+    basicstyle=\ttfamily\small,
+    backgroundcolor=\color{systusgray},
+    frame=single,
+    breaklines=true,
+    columns=fullflexible
+}
+\lstset{style=systus}
+
+\titleformat{\section}{\Large\bfseries\color{systusdark}}{\thesection}{0.8em}{}
+\titleformat{\subsection}{\large\bfseries\color{systusdark}}{\thesubsection}{0.8em}{}

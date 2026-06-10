@@ -1,0 +1,73 @@
+\section{Bilan et livrables}
+
+\subsection{Livrables attendus}
+
+\begin{longtable}{|p{5cm}|p{4cm}|p{4cm}|}
+\hline
+\textbf{Livrable} & \textbf{Statut} & \textbf{Emplacement / remarque} \\
+\hline
+Cahier des charges & Réalisé & Présent dans ce dossier LaTeX. \\
+\hline
+Analyse fonctionnelle & Réalisé & Présente dans ce dossier LaTeX. \\
+\hline
+Outils de management & Réalisé & WBS, planning, Kanban, risques. \\
+\hline
+Documentation technique & Réalisé & Architecture, modules, matériel, tests. \\
+\hline
+Poster de présentation & Hors document & Réalisé séparément. \\
+\hline
+Archives code & Réalisé & Dossier \texttt{src/systus}. \\
+\hline
+Archives CAO & Réalisé & \texttt{boitier-systus.stl}, \texttt{support-systus.stl}, \texttt{ecran-systus.stl}. \\
+\hline
+Schémas électroniques & Partiellement documenté & Schéma fourni et décrit ; image/source à ajouter au dépôt. \\
+\hline
+Prototype fonctionnel & À valider en soutenance & Démonstration le 11 juin 2026. \\
+\hline
+\end{longtable}
+
+\subsection{Fichiers PDF à rendre}
+
+\begin{longtable}{|p{5cm}|p{5cm}|p{3cm}|}
+\hline
+\textbf{Fichier attendu} & \textbf{Contenu} & \textbf{Statut} \\
+\hline
+\texttt{SYSTUS\_CDC.PDF} & Cahier des charges et analyse fonctionnelle. & Couvert par ce dossier \\
+\hline
+\texttt{SYSTUS\_DocTechnique.PDF} & Documentation technique, tests, architecture et archives. & Couvert par ce dossier \\
+\hline
+\texttt{SYSTUS\_Poster.PDF} & Poster de présentation. & Réalisé séparément \\
+\hline
+\end{longtable}
+
+\subsection{État du prototype au 10 juin 2026}
+
+Au moment du rendu documentaire, le dépôt contient une base logicielle cohérente
+pour le prototype :
+
+\begin{itemize}
+    \item boucle principale avec modes \texttt{setup} et \texttt{running} ;
+    \item capture audio par \texttt{arecord} ;
+    \item client de reconnaissance AudD ;
+    \item machine à états pour la détection ;
+    \item affichage e-paper des états et résultats ;
+    \item interface Flask de configuration Wi-Fi ;
+    \item gestion de boutons physiques via GPIO ;
+    \item fichiers STL du boîtier, du support et de la pièce écran archivés.
+\end{itemize}
+
+Les éléments à compléter concernent principalement la preuve matérielle finale :
+photos, image ou source du schéma électrique et résultats mesurés pendant les
+tests.
+
+\subsection{Conclusion}
+
+S.Y.S.T.U.S. valide l'idée d'un objet musical autonome capable de transformer
+une interaction physique simple en reconnaissance musicale et affichage e-paper.
+Le projet respecte l'esprit du prototypage : partir d'un besoin, cadrer les
+fonctions, construire rapidement une chaîne testable, puis identifier les
+limites et les pistes d'amélioration.
+
+La suite logique du projet consiste à sécuriser la configuration, finaliser le
+montage matériel, enrichir le boîtier et améliorer la robustesse de la
+démonstration.

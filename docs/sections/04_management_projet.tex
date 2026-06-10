@@ -1,0 +1,165 @@
+\section{Management de projet}
+
+\subsection{Méthode de pilotage}
+
+Le projet a été conduit selon une logique incrémentale inspirée du Kaizen :
+avancer par versions courtes, tester chaque brique, intégrer progressivement,
+puis documenter les décisions.
+
+La priorité a été donnée à une démonstration fonctionnelle :
+
+\begin{itemize}
+    \item un flux utilisateur simple ;
+    \item une capture audio réelle ;
+    \item une reconnaissance musicale exploitable ;
+    \item un affichage lisible ;
+    \item une configuration réseau minimale.
+\end{itemize}
+
+\subsection{WBS -- Work Breakdown Structure}
+
+\begin{lstlisting}
+1. Gestion projet
+   1.1 Cahier des charges
+   1.2 Analyse fonctionnelle
+   1.3 Planning du 11 mai au 11 juin
+   1.4 Suivi des risques
+   1.5 Documentation finale
+
+2. Conception materielle
+   2.1 Choix Raspberry Pi
+   2.2 Choix e-paper
+   2.3 Choix microphone
+   2.4 Integration boutons
+   2.5 Boitier / support style cassette
+   2.6 Alimentation
+
+3. Conception logicielle
+   3.1 Architecture Python
+   3.2 Capture audio
+   3.3 Client AudD
+   3.4 Controleur de detection
+   3.5 Rendu e-paper
+   3.6 Interface Flask
+   3.7 Gestion Wi-Fi
+   3.8 Nettoyage et documentation
+
+4. Tests
+   4.1 Test capture audio
+   4.2 Test reconnaissance
+   4.3 Test affichage
+   4.4 Test boutons
+   4.5 Test Wi-Fi
+   4.6 Test demonstration complete
+
+5. Rendus
+   5.1 Dossier LaTeX
+   5.2 Archives code
+   5.3 Fichiers CAO et schemas
+   5.4 Poster separe
+   5.5 Soutenance
+\end{lstlisting}
+
+\subsection{Planning réalisé}
+
+\begin{longtable}{|p{3cm}|p{5.2cm}|p{5.2cm}|}
+\hline
+\textbf{Période} & \textbf{Objectif} & \textbf{Résultat attendu} \\
+\hline
+11--15 mai & Cadrage du besoin et définition du concept. &
+Cahier des charges initial, choix du concept S.Y.S.T.U.S. \\
+\hline
+16--20 mai & Architecture et choix techniques. &
+Découpage Python, choix Raspberry Pi, écran e-paper, Flask et reconnaissance AudD. \\
+\hline
+21--25 mai & Capture audio et reconnaissance. &
+Module \texttt{AudioRecorder}, génération WAV, client \texttt{AudDClient}. \\
+\hline
+26--30 mai & Affichage et états système. &
+Écrans \textit{idle}, \textit{listening}, \textit{thinking}, \textit{result}, QR code. \\
+\hline
+31 mai--4 juin & Wi-Fi et interaction physique. &
+Interface Flask, scan réseau, configuration \texttt{nmcli}, boutons GPIO. \\
+\hline
+5--9 juin & Intégration et stabilisation. &
+Boucle principale, modes \texttt{setup}/\texttt{running}, nettoyage des états. \\
+\hline
+10 juin & Finalisation documentaire. &
+Dossier LaTeX, archives projet, préparation dépôt FabManager. \\
+\hline
+11 juin & Soutenance. &
+Support oral, démonstration prototype, questions-réponses. \\
+\hline
+\end{longtable}
+
+\subsection{Kanban de fin de projet}
+
+\begin{longtable}{|p{3cm}|p{7cm}|p{3cm}|}
+\hline
+\textbf{État} & \textbf{Tâches} & \textbf{Priorité} \\
+\hline
+Terminé & Structure Python du projet. & Haute \\
+\hline
+Terminé & Capture audio avec \texttt{arecord}. & Haute \\
+\hline
+Terminé & Client AudD pour reconnaissance de fichier WAV. & Haute \\
+\hline
+Terminé & États de détection et rendu e-paper. & Haute \\
+\hline
+Terminé & Interface web Flask de configuration Wi-Fi. & Haute \\
+\hline
+Terminé & Gestion de deux boutons GPIO : mode Wi-Fi et lancement d'écoute. & Haute \\
+\hline
+Terminé & Modélisation 3D du boîtier, du support et de la pièce écran. & Haute \\
+\hline
+À tester sur cible & Démonstration complète sur Raspberry Pi Zero 2 W monté. & Haute \\
+\hline
+À compléter & Prix exacts et nomenclature finale. & Moyenne \\
+\hline
+À compléter & Photos, schémas définitifs et fichiers CAO. & Moyenne \\
+\hline
+Hors délai & Optimisation autonomie et boîtier final industrialisable. & Basse \\
+\hline
+\end{longtable}
+
+\subsection{Matrice des risques}
+
+\begin{longtable}{|p{3.2cm}|p{2cm}|p{2cm}|p{3.2cm}|p{3cm}|}
+\hline
+\textbf{Risque} & \textbf{Prob.} & \textbf{Impact} & \textbf{Prévention} & \textbf{Plan de secours} \\
+\hline
+Micro mal configuré & Moyenne & Élevé & Tester tôt la commande \texttt{arecord}. & Utiliser un fichier WAV de test pour la démo logicielle. \\
+\hline
+API indisponible & Moyenne & Élevé & Prévoir une connexion stable et des exemples connus. & Montrer les états système et un résultat pré-enregistré. \\
+\hline
+Wi-Fi instable & Moyenne & Moyen & Interface de configuration et test \texttt{nmcli}. & Connexion manuelle avant soutenance. \\
+\hline
+E-paper lent & Haute & Moyen & Limiter les rafraîchissements aux changements d'état. & Démontrer uniquement les états essentiels. \\
+\hline
+Boutons avec rebond & Moyenne & Moyen & Ajouter un verrou et une temporisation logicielle. & Lancer l'action depuis le code pendant la démo. \\
+\hline
+Secret API exposé & Moyenne & Moyen & Déplacer le token vers une variable d'environnement. & Révoquer le token après rendu et documenter la limite. \\
+\hline
+Temps de finition court & Haute & Moyen & Prioriser le flux complet avant les finitions. & Présenter les limites clairement dans le bilan. \\
+\hline
+\end{longtable}
+
+\subsection{Journal de décisions}
+
+\begin{longtable}{|p{2.5cm}|p{4cm}|p{4cm}|p{3cm}|}
+\hline
+\textbf{Date} & \textbf{Décision} & \textbf{Justification} & \textbf{Impact} \\
+\hline
+Mai 2026 & Utiliser Python. & Rapidité de prototypage et nombreuses bibliothèques. & Développement plus rapide. \\
+\hline
+Mai 2026 & Utiliser Flask pour le Wi-Fi. & Léger, simple, suffisant pour une interface locale. & Interface web minimale opérationnelle. \\
+\hline
+Mai 2026 & Utiliser AudD pour la reconnaissance. & API simple à intégrer dans le délai. & Dépendance au réseau et à un token. \\
+\hline
+Mai 2026 & Utiliser l'e-paper Waveshare 4.2 V2. & Affichage sobre, lisible et adapté au style objet. & Rafraîchissement lent mais acceptable. \\
+\hline
+Juin 2026 & Séparer setup et running. & Clarifie l'expérience utilisateur. & Deux modes simples à expliquer en soutenance. \\
+\hline
+Juin 2026 & Déclencher l'écoute par clic bouton. & Évite une écoute continue et donne le contrôle à l'utilisateur. & Une nouvelle reconnaissance nécessite un nouvel appui. \\
+\hline
+\end{longtable}

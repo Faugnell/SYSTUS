@@ -1,32 +1,37 @@
-# Documentation S.Y.S.T.U.S
+# Documentation LaTeX S.Y.S.T.U.S.
 
-Ce dossier centralise toute la documentation du projet. Il separe les documents
-de gestion projet, la documentation technique et les ressources visuelles afin
-de garder le depot lisible pendant les iterations de prototypage.
+Ce dossier contient le rendu documentaire du projet S.Y.S.T.U.S. pour la
+période du 11 mai 2026 au 11 juin 2026.
 
-## Plan
+Le poster de présentation n'est pas inclus ici, conformément au choix de le
+réaliser séparément.
 
-```text
-docs/
-├── 00_overview/            # Vision generale, glossaire, schema global
-├── 10_project-management/  # Analyse, cahier des charges, planning, WBS
-├── 20_technical/           # Architecture, hardware, software, tests manuels
-└── 30_assets/              # Images, references, exports de croquis
+## Contenu
+
+- `main.tex` : document principal.
+- `sections/` : chapitres LaTeX du rendu.
+- `build/` : dossier de sortie généré à la compilation.
+- `Makefile` : commande pratique pour générer le PDF.
+
+## Compilation
+
+Depuis le dossier `docs` :
+
+```bash
+make
 ```
 
-## Regles de rangement
+Ou directement :
 
-- Les fichiers sources modifiables vont dans leur dossier metier
-  (`.docx`, `.drawio`, `.f3d`, `.step`, `.kicad_*`, etc.).
-- Les exports consultables vont de preference en PDF, PNG ou SVG dans le meme
-  dossier ou dans `30_assets/` si ce sont des ressources communes.
-- Les noms de fichiers utilisent des minuscules, des tirets et pas d'espaces,
-  par exemple `schema-electrique-v1.pdf`.
-- Chaque decision importante doit etre resumee dans un fichier Markdown pour
-  rester lisible sans outil proprietaire.
+```bash
+pdflatex -interaction=nonstopmode -halt-on-error -output-directory=build main.tex
+pdflatex -interaction=nonstopmode -halt-on-error -output-directory=build main.tex
+```
 
-## Documents deja ranges
+Le PDF attendu sera généré dans `docs/build/main.pdf`.
 
-- `10_project-management/functional-analysis/analyse-fonctionnelle.docx`
-- `10_project-management/specifications/cahier-des-charges.docx`
-- `10_project-management/tools/outils-de-management.docx`
+## Informations à compléter avant rendu
+
+- Groupe et encadrant.
+- Résultats de tests réellement observés sur Raspberry Pi.
+- Captures, schémas et photos du montage si disponibles.

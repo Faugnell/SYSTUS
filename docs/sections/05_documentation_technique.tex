@@ -1,0 +1,228 @@
+\section{Documentation technique}
+
+\subsection{Architecture générale}
+
+Le code est organisé autour d'une boucle principale située dans
+\texttt{src/systus/app.py}. Cette boucle initialise le mode système, démarre le
+serveur Wi-Fi local, configure les boutons, puis met à jour le contrôleur de
+detection.
+
+\begin{lstlisting}
+src/systus/
+  app.py
+  audio_capture/
+    recorder.py
+  buttons/
+    controller.py
+  detection/
+    audd_client.py
+    detection.py
+  display/
+    screen.py
+  wifi/
+    wifi.py
+    templates/
+    static/
+\end{lstlisting}
+
+\subsection{Modes système}
+
+Deux modes structurent le comportement :
+
+\begin{longtable}{|p{3cm}|p{10cm}|}
+\hline
+\textbf{Mode} & \textbf{Rôle} \\
+\hline
+\texttt{setup} & Mode de configuration. L'écran affiche un QR code permettant d'accéder à l'interface Wi-Fi locale. \\
+\hline
+\texttt{running} & Mode d'utilisation normale. L'utilisateur peut lancer une reconnaissance musicale. \\
+\hline
+\end{longtable}
+
+Au démarrage, le programme teste l'état réseau avec \texttt{nmcli}. Si le Wi-Fi
+est connecté, le mode \texttt{running} est choisi ; sinon, le mode
+\texttt{setup} est affiché.
+
+\subsection{Capture audio}
+
+La capture audio est assurée par la classe \texttt{AudioRecorder}. Elle crée un
+fichier temporaire au format WAV, lance la commande \texttt{arecord}, puis
+retourne le chemin du fichier capturé.
+
+Paramètres utilisés :
+
+\begin{itemize}
+    \item périphérique : \texttt{plughw:0,0} ;
+    \item format : \texttt{S16\_LE} ;
+    \item fréquence : 16000 Hz ;
+    \item canal : mono ;
+    \item durée de détection actuelle : 10 secondes.
+\end{itemize}
+
+Extrait logique :
+
+\begin{lstlisting}
+arecord -D plughw:0,0 -f S16_LE -r 16000 -c 1 -d 10 fichier.wav
+\end{lstlisting}
+
+\subsection{Reconnaissance musicale}
+
+La reconnaissance est assurée par la classe \texttt{AudDClient}. Elle envoie le
+fichier WAV à l'API AudD avec une requête HTTP \texttt{POST}. La réponse est
+ensuite vérifiée : si le statut est \texttt{success}, le champ \texttt{result}
+est conservé.
+
+Métadonnées exploitées par l'interface :
+
+\begin{itemize}
+    \item titre ;
+    \item artiste ;
+    \item album ;
+    \item date de sortie ;
+    \item lien vers le morceau.
+\end{itemize}
+
+Limite importante : dans l'état actuel du code, le token AudD est écrit en dur
+dans le contrôleur de détection. Pour une version propre, il doit être déplacé
+dans une variable d'environnement ou un fichier de configuration non commité.
+
+\subsection{Contrôleur de détection}
+
+Le module \texttt{detection.py} contient une machine à états simple :
+
+\begin{longtable}{|p{3cm}|p{10cm}|}
+\hline
+\textbf{État} & \textbf{Description} \\
+\hline
+\texttt{idle} & Le système attend une action utilisateur. \\
+\hline
+\texttt{listening} & Le système enregistre un extrait audio. \\
+\hline
+\texttt{thinking} & Le système envoie l'audio à AudD et attend le résultat. \\
+\hline
+\texttt{result} & Le résultat ou l'échec est affiché. \\
+\hline
+\end{longtable}
+
+Cette structure évite de mélanger la logique de capture, la reconnaissance et
+l'affichage. Elle rend aussi les états faciles à expliquer lors de la
+soutenance.
+
+\subsection{Affichage e-paper}
+
+Le module \texttt{screen.py} utilise la bibliothèque e-paper Waveshare, ainsi
+que \texttt{Pillow} et \texttt{qrcode}. L'écran est traité comme une image
+monochrome de 400 par 300 pixels.
+
+Vues disponibles :
+
+\begin{itemize}
+    \item \texttt{show\_setup} : mode configuration avec QR code ;
+    \item \texttt{show\_idle} : attente d'une détection ;
+    \item \texttt{show\_listening} : capture en cours ;
+    \item \texttt{show\_thinking} : reconnaissance en cours ;
+    \item \texttt{show\_result} : affichage titre, artiste, album, année et QR code.
+\end{itemize}
+
+\subsection{Interface Wi-Fi}
+
+Le module \texttt{wifi.py} crée une application Flask. Elle expose trois routes
+principales :
+
+\begin{longtable}{|p{3cm}|p{3cm}|p{7cm}|}
+\hline
+\textbf{Route} & \textbf{Méthode} & \textbf{Rôle} \\
+\hline
+\texttt{/} & GET & Affiche la page de configuration avec les réseaux détectés. \\
+\hline
+\texttt{/scan} & GET & Retourne les réseaux Wi-Fi disponibles en JSON. \\
+\hline
+\texttt{/wifi} & POST & Ajoute/modifie une connexion Wi-Fi via \texttt{nmcli}. \\
+\hline
+\end{longtable}
+
+La configuration réseau repose sur \texttt{nmcli}. Le système supprime
+d'abord une éventuelle ancienne connexion du même nom, recrée la connexion,
+configure la sécurité WPA-PSK, puis tente de l'activer.
+
+\subsection{Boutons physiques}
+
+Le module \texttt{controller.py} utilise \texttt{gpiozero}. Deux boutons sont
+déclarés :
+
+\begin{itemize}
+    \item GPIO 5 : changement de mode, notamment accès au mode de mise en place du Wi-Fi ;
+    \item GPIO 6 : action principale, lancement manuel d'une écoute.
+\end{itemize}
+
+Un verrou et une temporisation de 0,4 seconde limitent les doubles déclenchements
+sur le bouton de mode. L'écoute n'est pas continue : chaque tentative de
+reconnaissance doit être lancée par un nouvel appui sur le bouton d'action.
+
+\subsection{Matériel identifié}
+
+\begin{longtable}{|p{5cm}|p{4cm}|p{4cm}|}
+\hline
+\textbf{Élément} & \textbf{Statut} & \textbf{Remarque} \\
+\hline
+Raspberry Pi Zero 2 W & Intégré au choix matériel & Version avec headers soudés. \\
+\hline
+Pico-ePaper-4.2, 400 x 300 px & Prévu / codé & Écran noir/blanc avec 4 niveaux de gris. \\
+\hline
+Microphone MEMS ICS-43434 I2S & Intégré au choix matériel & Module 3,3 V. \\
+\hline
+Boutons physiques & Prévu / codé & GPIO 5 et GPIO 6. \\
+\hline
+Batterie LiPo 2000 mAh, 7,4 Wh & Intégrée au choix matériel & Connecteur JST PH 2.0 mm, 2 broches. \\
+\hline
+UPS HAT (C) pour Raspberry Pi Zero & Intégré au choix matériel & Version sans batterie fournie. \\
+\hline
+Boîtier / support / pièce écran & Archivé & Fichiers STL dans \texttt{docs/assets/cad}. \\
+\hline
+\end{longtable}
+
+\subsection{Schéma électrique}
+
+Le schéma électrique fourni relie le Raspberry Pi Zero 2 W au microphone
+ICS-43434, à l'écran e-paper, aux boutons et à l'alimentation. Il fait apparaître
+les rails 5 V et 3,3 V, le connecteur du microphone I2S, le connecteur de
+l'écran e-paper et trois interrupteurs momentanés prévus pour les interactions
+physiques.
+
+Dans le code actuel, deux entrées bouton sont utilisées :
+
+\begin{itemize}
+    \item GPIO 5 pour la bascule de mode ;
+    \item GPIO 6 pour le lancement d'écoute.
+\end{itemize}
+
+Le troisième bouton visible sur le schéma peut être conservé pour une évolution
+future, par exemple changement d'écran, mise en veille ou relance rapide.
+
+\subsection{Budget prévisionnel}
+
+\begin{longtable}{|p{5cm}|p{2cm}|p{3cm}|p{3cm}|}
+\hline
+\textbf{Composant} & \textbf{Qté} & \textbf{Prix unitaire} & \textbf{Total} \\
+\hline
+Raspberry Pi Zero 2 W avec headers & 1 & 54,99 \texteuro{} & 54,99 \texteuro{} \\
+\hline
+Pico-ePaper-4.2, 400 x 300 & 1 & 28,19 \texteuro{} & 28,19 \texteuro{} \\
+\hline
+Microphone MEMS ICS-43434 I2S & 1 & 7,39 \texteuro{} & 7,39 \texteuro{} \\
+\hline
+Lot de 10 boutons poussoirs PB86-A0 & 1 & 6,49 \texteuro{} & 6,49 \texteuro{} \\
+\hline
+Batterie LiPo 3,7 V 2000 mAh & 1 & 6,79 \texteuro{} & 6,79 \texteuro{} \\
+\hline
+UPS HAT (C) Raspberry Pi Zero & 1 & 24,59 \texteuro{} & 24,59 \texteuro{} \\
+\hline
+Carte microSD SanDisk 16 Go & 1 & 20,39 \texteuro{} & 20,39 \texteuro{} \\
+\hline
+\textbf{Total composants commandés} & & & \textbf{148,83 \texteuro{}} \\
+\hline
+\end{longtable}
+
+Les commandes listées ont été passées le 28 avril 2026. Les frais éventuels de
+matière pour l'impression 3D, câbles, visserie ou consommables ne sont pas
+inclus dans ce total.

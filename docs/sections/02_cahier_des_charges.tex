@@ -1,0 +1,140 @@
+\section{Cahier des charges}
+
+\subsection{Contexte et besoin}
+
+Le besoin identifié est de permettre à un utilisateur d'identifier une musique
+diffusée autour de lui sans utiliser directement son téléphone. L'objet doit
+pouvoir être posé dans un environnement sonore, lancé par un bouton physique,
+puis afficher le résultat de manière claire.
+
+Le prototype s'adresse principalement à :
+
+\begin{itemize}
+    \item un utilisateur curieux souhaitant identifier rapidement un morceau ;
+    \item un maker voulant reproduire ou modifier le système ;
+    \item un jury ou un public de démonstration ;
+    \item un développeur souhaitant expérimenter la reconnaissance audio sur
+    Raspberry Pi.
+\end{itemize}
+
+\subsection{Objectif principal}
+
+Réaliser un prototype fonctionnel capable de capturer un extrait audio,
+d'envoyer cet extrait à un service de reconnaissance musicale, puis d'afficher
+le résultat sur un écran e-paper.
+
+\subsection{Objectifs secondaires}
+
+\begin{itemize}
+    \item fournir une interface web locale pour la configuration Wi-Fi ;
+    \item afficher un QR code de configuration en mode setup ;
+    \item gérer des boutons physiques pour piloter le prototype ;
+    \item documenter l'architecture logicielle et matérielle ;
+    \item préparer une base de code modulaire et évolutive ;
+    \item garder une solution compatible avec les ressources d'un Raspberry Pi.
+\end{itemize}
+
+\subsection{Périmètre}
+
+\begin{longtable}{|p{0.45\linewidth}|p{0.45\linewidth}|}
+\hline
+\textbf{Inclus dans le prototype} & \textbf{Hors périmètre initial} \\
+\hline
+Capture audio courte via ALSA et \texttt{arecord}. &
+Production industrielle du boîtier. \\
+\hline
+Reconnaissance musicale via API AudD. &
+Reconnaissance musicale 100 \% locale. \\
+\hline
+Affichage e-paper Waveshare 4.2 pouces V2. &
+Application mobile native. \\
+\hline
+Interface web Flask pour configuration Wi-Fi. &
+Historique musical avancé multi-utilisateur. \\
+\hline
+Boutons physiques sur GPIO. &
+Optimisation poussée de l'autonomie. \\
+\hline
+Structure de documentation et code Python. &
+Certification ou conformité industrielle. \\
+\hline
+\end{longtable}
+
+\subsection{Contraintes}
+
+\subsubsection{Contraintes matérielles}
+
+\begin{itemize}
+    \item utilisation d'un Raspberry Pi Zero 2 W ;
+    \item intégration d'un microphone MEMS ICS-43434 en I2S ;
+    \item intégration d'un écran Pico-ePaper-4.2 de 400 par 300 pixels ;
+    \item utilisation de boutons physiques ;
+    \item alimentation par batterie LiPo 2000 mAh, 7,4 Wh, avec UPS HAT (C) ;
+    \item boîtier ou support inspiré d'une cassette futuriste ;
+    \item coût compatible avec un prototype étudiant.
+\end{itemize}
+
+\subsubsection{Contraintes logicielles}
+
+\begin{itemize}
+    \item langage principal : Python ;
+    \item capture audio par commande système \texttt{arecord} ;
+    \item serveur web local avec Flask ;
+    \item gestion Wi-Fi via \texttt{nmcli} ;
+    \item affichage via la bibliothèque e-paper Waveshare ;
+    \item code organisé en modules indépendants.
+\end{itemize}
+
+\subsubsection{Contraintes de délai}
+
+Le projet a été conduit du 11 mai 2026 au 11 juin 2026. La durée disponible a
+imposé une démarche de prototypage incrémental : valider d'abord la chaîne
+fonctionnelle principale, puis améliorer l'ergonomie et la documentation.
+
+\subsection{Fonctions attendues}
+
+\begin{longtable}{|p{1.5cm}|p{8.8cm}|p{2.2cm}|}
+\hline
+\textbf{Code} & \textbf{Fonction attendue} & \textbf{Priorité} \\
+\hline
+F1 & Capturer un extrait audio exploitable. & Haute \\
+\hline
+F2 & Lancer une reconnaissance musicale à partir de l'extrait capturé. & Haute \\
+\hline
+F3 & Récupérer les métadonnées disponibles : titre, artiste, album, date, lien. & Haute \\
+\hline
+F4 & Afficher un état clair sur l'écran e-paper. & Haute \\
+\hline
+F5 & Afficher le résultat reconnu sur l'écran e-paper. & Haute \\
+\hline
+F6 & Afficher un QR code pour accéder à la configuration Wi-Fi. & Moyenne \\
+\hline
+F7 & Fournir une interface web locale de configuration. & Haute \\
+\hline
+F8 & Piloter les actions principales par boutons physiques. & Haute \\
+\hline
+F9 & Gérer les erreurs sans bloquer l'utilisateur. & Haute \\
+\hline
+F10 & Documenter le montage, les choix et les tests. & Haute \\
+\hline
+\end{longtable}
+
+\subsection{Critères de validation}
+
+\begin{longtable}{|p{4cm}|p{9cm}|}
+\hline
+\textbf{Élément} & \textbf{Critère de validation} \\
+\hline
+Capture audio & Un fichier WAV temporaire est généré après appui sur le bouton d'action. \\
+\hline
+Reconnaissance & Un morceau audible et connu retourne au minimum un titre et un artiste lorsque l'API répond. \\
+\hline
+Affichage & L'écran e-paper affiche les états \textit{idle}, \textit{listening}, \textit{thinking} et résultat. \\
+\hline
+Wi-Fi & L'interface web permet de scanner les réseaux et d'envoyer un SSID/mot de passe. \\
+\hline
+Boutons & Le bouton de mode change entre setup et running ; le bouton d'action lance une écoute manuelle. Chaque nouvelle écoute nécessite un nouvel appui. \\
+\hline
+Documentation & Le dossier décrit le besoin, les fonctions, l'architecture, le planning et les tests. \\
+\hline
+\end{longtable}

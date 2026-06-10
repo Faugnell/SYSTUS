@@ -1,0 +1,78 @@
+\appendix
+\section{Annexes}
+
+\subsection{Arborescence utile du dépôt}
+
+\begin{lstlisting}
+.
+  README.md
+  config/
+  docs/
+    assets/
+      cad/
+        boitier-systus.stl
+        ecran-systus.stl
+        support-systus.stl
+    main.tex
+    sections/
+  src/
+    systus/
+      app.py
+      audio_capture/
+      buttons/
+      detection/
+      display/
+      wifi/
+  systemd/
+  tests/
+\end{lstlisting}
+
+\subsection{Commandes utiles}
+
+\begin{lstlisting}
+# Compiler le dossier LaTeX
+cd docs
+make
+
+# Lancer l'application Python
+python -m systus.app
+
+# Tester une capture audio manuelle
+arecord -D plughw:0,0 -f S16_LE -r 16000 -c 1 -d 10 test.wav
+\end{lstlisting}
+
+\subsection{Éléments à déposer comme archives}
+
+\begin{itemize}
+    \item code source du dépôt ;
+    \item PDF généré depuis ce dossier LaTeX ;
+    \item fichiers de modélisation 3D : boîtier, support et pièce écran ;
+    \item exports STL déjà présents dans \texttt{docs/assets/cad} ;
+    \item schéma de câblage, idéalement au format image ou PDF ;
+    \item photos du prototype ;
+    \item éventuelles captures de l'interface web ;
+    \item support de soutenance ;
+    \item poster de présentation.
+\end{itemize}
+
+\subsection{Checklist avant dépôt FabManager}
+
+\begin{longtable}{|p{10cm}|p{3cm}|}
+\hline
+\textbf{Action} & \textbf{Statut} \\
+\hline
+Compiler le PDF final. & À faire \\
+\hline
+Remplacer les champs \textit{À compléter}. & À faire \\
+\hline
+Vérifier que le token AudD n'est pas diffusé publiquement. & À faire \\
+\hline
+Vérifier que les fichiers STL sont bien présents dans l'archive. & Fait \\
+\hline
+Ajouter schémas et photos au format image/PDF. & À faire \\
+\hline
+Déposer le PDF sur FabManager. & À faire \\
+\hline
+Préparer le support de soutenance et la démonstration. & À faire \\
+\hline
+\end{longtable}

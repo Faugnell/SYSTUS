@@ -1,0 +1,168 @@
+\section{Analyse fonctionnelle}
+
+\subsection{Expression du besoin}
+
+\subsubsection{Bête à cornes}
+
+\begin{longtable}{|p{5cm}|p{8cm}|}
+\hline
+\textbf{Question} & \textbf{Réponse} \\
+\hline
+À qui le produit rend-il service ? &
+À un utilisateur qui souhaite identifier une musique depuis un objet autonome. \\
+\hline
+Sur quoi agit-il ? &
+Sur un extrait sonore capté dans l'environnement. \\
+\hline
+Dans quel but ? &
+Reconnaître le morceau et afficher les informations principales. \\
+\hline
+\end{longtable}
+
+Formulation du besoin :
+
+\begin{quote}
+Permettre à un utilisateur d'identifier une musique diffusée autour de lui à
+l'aide d'un objet physique autonome, lisible et documenté.
+\end{quote}
+
+\subsection{Environnement du système}
+
+Le système interagit avec les éléments extérieurs suivants :
+
+\begin{itemize}
+    \item utilisateur ;
+    \item musique ambiante ;
+    \item réseau Wi-Fi local ;
+    \item service de reconnaissance musicale AudD ;
+    \item écran e-paper ;
+    \item boutons physiques ;
+    \item batterie 2000 mAh et UPS HAT (C) ;
+    \item navigateur web ;
+    \item boîtier du prototype.
+\end{itemize}
+
+\subsection{Diagramme pieuvre textuel}
+
+\begin{longtable}{|p{1.8cm}|p{8.8cm}|p{2.5cm}|}
+\hline
+\textbf{Code} & \textbf{Relation avec l'environnement} & \textbf{Type} \\
+\hline
+FP1 & Identifier une musique diffusée dans l'environnement. & Principale \\
+\hline
+FC1 & Être commandé simplement par l'utilisateur. & Contrainte \\
+\hline
+FC2 & Afficher une information lisible sur écran e-paper. & Contrainte \\
+\hline
+FC3 & Fonctionner sur Raspberry Pi avec ressources limitées. & Contrainte \\
+\hline
+FC4 & Communiquer avec un réseau Wi-Fi local. & Contrainte \\
+\hline
+FC5 & Utiliser des composants accessibles. & Contrainte \\
+\hline
+FC6 & Être maintenable et documenté. & Contrainte \\
+\hline
+FC7 & S'intégrer dans un objet au style cassette futuriste. & Contrainte \\
+\hline
+FC8 & Gérer les échecs de reconnaissance sans blocage. & Contrainte \\
+\hline
+\end{longtable}
+
+\subsection{Fonctions de service}
+
+\begin{longtable}{|p{2cm}|p{5cm}|p{6cm}|}
+\hline
+\textbf{Code} & \textbf{Fonction} & \textbf{Description} \\
+\hline
+FS1 & Capturer un extrait audio &
+Le système enregistre un extrait court au format WAV. \\
+\hline
+FS2 & Reconnaître le morceau &
+Le fichier audio est transmis à l'API AudD pour obtenir un résultat. \\
+\hline
+FS3 & Normaliser les métadonnées &
+Le résultat est transformé en structure utilisable par l'affichage. \\
+\hline
+FS4 & Afficher l'état ou le résultat &
+L'écran e-paper affiche l'état courant ou le morceau reconnu. \\
+\hline
+FS5 & Configurer le Wi-Fi &
+Une interface Flask permet de choisir un réseau et de saisir le mot de passe. \\
+\hline
+FS6 & Réagir aux boutons &
+Les boutons physiques déclenchent le changement de mode et la détection. \\
+\hline
+\end{longtable}
+
+\subsection{Scénarios d'utilisation}
+
+\subsubsection{Scénario nominal}
+
+\begin{enumerate}
+    \item L'utilisateur allume S.Y.S.T.U.S.
+    \item Le système vérifie l'état du Wi-Fi.
+    \item Si le Wi-Fi est disponible, le mode \texttt{running} est affiché.
+    \item L'utilisateur appuie sur le bouton d'action.
+    \item Le système enregistre un extrait audio. L'écoute n'est pas automatique en continu : chaque écoute est déclenchée par un clic bouton.
+    \item L'extrait est envoyé au service AudD.
+    \item Les métadonnées retournées sont filtrées.
+    \item L'écran e-paper affiche le titre, l'artiste, l'album, l'année et un QR code de lien si disponible.
+\end{enumerate}
+
+\subsubsection{Scénario configuration Wi-Fi}
+
+\begin{enumerate}
+    \item Le système démarre sans connexion Wi-Fi active.
+    \item Le mode \texttt{setup} est sélectionné.
+    \item L'écran affiche un QR code vers l'interface locale.
+    \item L'utilisateur ouvre l'interface web.
+    \item L'application scanne les réseaux disponibles avec \texttt{nmcli}.
+    \item L'utilisateur saisit le SSID et le mot de passe.
+    \item Le système tente la connexion et revient au mode \texttt{running} si elle réussit.
+\end{enumerate}
+
+Dans l'implémentation actuelle, le bouton de mode permet aussi de basculer
+manuellement vers le mode de mise en place du Wi-Fi.
+
+\subsubsection{Scénario d'échec de reconnaissance}
+
+\begin{enumerate}
+    \item L'utilisateur lance une écoute.
+    \item L'audio est capturé, mais aucun morceau n'est reconnu.
+    \item Le système affiche un état \textit{No result}.
+    \item L'utilisateur peut relancer une écoute.
+\end{enumerate}
+
+\subsection{Chaîne fonctionnelle}
+
+\begin{lstlisting}
+Utilisateur
+  -> Bouton d'action
+  -> DetectionController
+  -> AudioRecorder
+  -> arecord / fichier WAV temporaire
+  -> AudDClient
+  -> Metadonnees normalisees
+  -> Module display
+  -> Ecran e-paper
+\end{lstlisting}
+
+\subsection{Fonctions critiques}
+
+\begin{longtable}{|p{4cm}|p{3cm}|p{6cm}|}
+\hline
+\textbf{Fonction} & \textbf{Criticité} & \textbf{Justification} \\
+\hline
+Capture audio & Critique & Sans signal exploitable, aucune reconnaissance n'est possible. \\
+\hline
+Reconnaissance musicale & Critique & C'est le coeur de la promesse utilisateur. \\
+\hline
+Affichage e-paper & Critique & C'est la sortie principale du prototype. \\
+\hline
+Gestion Wi-Fi & Importante & Nécessaire pour l'API et la configuration. \\
+\hline
+Boutons physiques & Importante & Rend l'objet manipulable sans ordinateur. \\
+\hline
+Boîtier & Moyenne & Important pour l'expérience, mais non bloquant pour valider le flux. \\
+\hline
+\end{longtable}

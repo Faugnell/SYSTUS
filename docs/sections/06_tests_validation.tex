@@ -1,0 +1,93 @@
+\section{Tests et validation}
+
+\subsection{Stratégie de test}
+
+Les tests doivent valider séparément chaque brique avant de valider la chaîne
+complète. Cette approche réduit le risque de chercher une panne dans tout le
+système alors qu'elle vient d'un seul module.
+
+\subsection{Plan de tests}
+
+\begin{longtable}{|p{3cm}|p{4cm}|p{4cm}|p{2cm}|}
+\hline
+\textbf{Test} & \textbf{Procédure} & \textbf{Résultat attendu} & \textbf{Statut} \\
+\hline
+Capture audio & Lancer une détection et vérifier la création du WAV temporaire. &
+Fichier lisible généré par \texttt{arecord}. & À compléter \\
+\hline
+Reconnaissance AudD & Envoyer un extrait connu à l'API. &
+Titre et artiste retournés. & À compléter \\
+\hline
+État sans résultat & Tester un extrait silencieux ou non reconnu. &
+Affichage \textit{No result}. & À compléter \\
+\hline
+Affichage setup & Démarrer sans Wi-Fi connecté. &
+QR code de configuration affiché. & À compléter \\
+\hline
+Affichage résultat & Simuler ou obtenir une réponse AudD. &
+Titre, artiste, album, année et QR code affichés. & À compléter \\
+\hline
+Interface web & Ouvrir l'adresse IP du prototype sur le port \texttt{5000}. &
+Page de configuration visible. & À compléter \\
+\hline
+Scan Wi-Fi & Appeler \texttt{/scan}. &
+Liste JSON de réseaux disponibles. & À compléter \\
+\hline
+Bouton mode & Appuyer sur le bouton GPIO 5. &
+Passage entre setup et running. & À compléter \\
+\hline
+Bouton action & Appuyer sur le bouton GPIO 6 en mode running. &
+Une écoute de 10 secondes est lancée. Chaque nouvelle écoute demande un nouvel appui. & À compléter \\
+\hline
+Démo complète & Bouton, capture, reconnaissance, affichage. &
+Chaîne fonctionnelle démontrable. & À compléter \\
+\hline
+\end{longtable}
+
+\subsection{Feuille de recette}
+
+\begin{longtable}{|p{8cm}|p{3cm}|p{3cm}|}
+\hline
+\textbf{Critère} & \textbf{Validé} & \textbf{Commentaire} \\
+\hline
+Le prototype démarre sans erreur bloquante. & Oui / Non & À compléter \\
+\hline
+Le mode initial correspond à l'état du Wi-Fi. & Oui / Non & À compléter \\
+\hline
+L'écran e-paper affiche les états principaux. & Oui / Non & À compléter \\
+\hline
+La capture audio produit un fichier exploitable. & Oui / Non & À compléter \\
+\hline
+La reconnaissance retourne un résultat sur un morceau connu. & Oui / Non & À compléter \\
+\hline
+Le système gère l'absence de résultat. & Oui / Non & À compléter \\
+\hline
+L'interface Wi-Fi est accessible. & Oui / Non & À compléter \\
+\hline
+Les boutons déclenchent les actions attendues. & Oui / Non & À compléter \\
+\hline
+La documentation permet de comprendre le fonctionnement. & Oui / Non & À compléter \\
+\hline
+\end{longtable}
+
+\subsection{Limites connues}
+
+\begin{itemize}
+    \item La reconnaissance dépend d'une connexion Internet et du service AudD.
+    \item Le token API doit être sécurisé avant toute diffusion publique du code.
+    \item Les performances exactes sur Raspberry Pi doivent être mesurées sur le montage final.
+    \item Le portail Wi-Fi n'est pas encore décrit comme un vrai portail captif complet ; il s'agit d'une interface locale Flask.
+    \item Le boîtier, les schémas et le budget doivent être complétés avec les fichiers réels du prototype.
+\end{itemize}
+
+\subsection{Améliorations possibles}
+
+\begin{itemize}
+    \item déplacer la configuration sensible dans un fichier \texttt{.env} ;
+    \item ajouter des tests automatisés unitaires pour les contrôleurs ;
+    \item prévoir un mode simulation sans matériel pour la soutenance ;
+    \item améliorer la mise en page e-paper avec des polices mieux adaptées ;
+    \item ajouter un historique des derniers morceaux reconnus ;
+    \item améliorer le boîtier et l'intégration mécanique ;
+    \item mesurer l'autonomie et optimiser les cycles de rafraîchissement.
+\end{itemize}
