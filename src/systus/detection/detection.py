@@ -26,7 +26,7 @@ class DetectionController:
         self.recorder = AudioRecorder()
 
         self.audd = AudDClient(
-            api_token="a1f8dc29dd7765e68f96e90dc26b8cbc"
+            api_token="ddba2e3687f0abaa8314b5ce86982976"
         )
 
         self.wav_path = None
